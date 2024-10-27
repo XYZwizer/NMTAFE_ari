@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from controler import Controller
 import rospy
 
@@ -28,18 +27,17 @@ def toTwist(direc : tuple):
 	twist_msg.angular.z = -direc[0] * speed
 	return twist_msg
 
-if __name__ == "__main__":
-	print("david")
-	rospy.init_node('cont_teli')
-	publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size = 1)
-	wait_for_subscribers(publisher)
-	c = Controller()
-	while(1):
-		c.poll()
-		if c.west == 1:
+class ari_mover:
+	def __init__(self):
+		rospy.init_node('cont_teli')
+		self.publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size = 1)
+		wait_for_subscribers(publisher)
+		self.gamePad = Controller()
+	def do(self):
+		self.gamePad.poll()
+		if self.gamePad.west == 1:
 			exit(0)
-		if c.north == 1:
-			c.left_joy.setCurrentAsDeadZone()
-		print(f"{c.left_joy.direction}", end="                        \r")
-		publisher.publish(toTwist(c.left_joy.direction))
-		
+		if self.gamePad.north == 1:
+			self.gamePad.left_joy.setCurrentAsDeadZone()
+		print(f"{self.gamePad.left_joy.direction}", end="                        \r")
+		self.publisher.publish(toTwist(self.gamePad.left_joy.direction))
