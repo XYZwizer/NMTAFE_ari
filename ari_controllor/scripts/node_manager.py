@@ -31,7 +31,7 @@ class ari_mover:
 	def __init__(self):
 		rospy.init_node('cont_teli')
 		self.publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size = 1)
-		wait_for_subscribers(publisher)
+		wait_for_subscribers(self.publisher)
 		self.gamePad = Controller()
 	def do(self):
 		self.gamePad.poll()
