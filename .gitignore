@@ -1,0 +1,13 @@
+*/atomic_configure/*
+*/catkin/*
+*/catkin_generated/*
+*/CMakeFiles/*
+*/devel/*
+*/gtest/*
+*/test_results/*
+
+*/CMakeCache.txt
+*/CTestConfiguration.ini
+*/CTestCustom.cmake
+*/CTestTestfile.cmake
+*/Makefile
