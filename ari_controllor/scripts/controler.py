@@ -1,5 +1,8 @@
 from inputs import get_gamepad
 
+import asyncio
+
+
 class joyStick:
 
 	defult_max = 32768
@@ -46,7 +49,13 @@ class Controller:
 		self.south = 0
 		self.west = 0
 	def poll(self) -> None:
-		events = get_gamepad()
+		try:
+			async with asyncio.timeout(5):
+				events = get_gamepad()
+		except asyncio.TimeoutError:
+			events = []
+		print("\n")
+		print(len(events))
 		for event in events:
 			#match event.code:
 			#	case "ABS_Y":
