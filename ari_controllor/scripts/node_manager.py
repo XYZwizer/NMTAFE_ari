@@ -29,8 +29,8 @@ def toTwist(direc : tuple):
 
 class ari_mover:
 	def __init__(self):
-		rospy.init_node('cont_teli')
-		self.publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size = 1)
+		rospy.init_node('ari_controller_teli_NMTAFE')
+		self.publisher = rospy.Publisher('/mobile_base_controller/cmd_vel', Twist, queue_size = 1)
 		wait_for_subscribers(self.publisher)
 		self.gamePad = Controller(background_polling=True)
 	def do(self):
