@@ -1,6 +1,6 @@
 from inputs import get_gamepad
 
-import asyncio
+import threading
 
 
 class joyStick:
@@ -40,7 +40,7 @@ class Controller:
 	south : int
 	west : int
 
-	def __init__(self) -> None:
+	def __init__(self, background_polling=False) -> None:
 		self.left_joy = joyStick()
 		self.right_joy = joyStick()
 
@@ -48,14 +48,19 @@ class Controller:
 		self.east = 0
 		self.south = 0
 		self.west = 0
+		if background_polling:
+			#print("starting polling thred")
+			x = threading.Thread(target= self.__class__.background_poll, args=(self,))
+			x.start()
+
+	def background_poll(self):
+		#print("thred started")
+		while True:
+			#print("polliugn")
+			self.poll()
 	def poll(self) -> None:
-		try:
-			async with asyncio.timeout(5):
-				events = get_gamepad()
-		except asyncio.TimeoutError:
-			events = []
-		print("\n")
-		print(len(events))
+		events = get_gamepad()
+		#print(events)
 		for event in events:
 			#match event.code:
 			#	case "ABS_Y":
