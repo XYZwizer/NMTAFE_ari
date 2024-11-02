@@ -1,6 +1,6 @@
 from inputs import get_gamepad
 
-import threading
+import multiprocessing
 
 
 class joyStick:
@@ -10,8 +10,8 @@ class joyStick:
 	y : int
 	x : int
 	def __init__(self) -> None:
-		self.x = 0
-		self.y = 0
+		self.mp_x = multiprocessing.Value('f')
+		self.mp_y = multiprocessing.Value('f')
 
 		self.x_max = self.defult_max
 		self.y_max = self.defult_max
@@ -29,7 +29,22 @@ class joyStick:
 		y = self.y/self.y_max if abs(self.y) > self.y_dead_zone else 0
 
 		return (x,y)
-
+		
+	@property
+	def x(self):
+		return self.mp_x.value
+	@x.setter
+	def x(self,v):
+		self.mp_x.value = v
+		
+	@property
+	def y(self):
+		return self.mp_y.value
+	@y.setter
+	def y(self,v):
+		self.mp_y.value = v
+		
+	
 class Controller:
 	left_joy : joyStick
 
@@ -44,24 +59,57 @@ class Controller:
 		self.left_joy = joyStick()
 		self.right_joy = joyStick()
 
-		self.north = 0
-		self.east = 0
-		self.south = 0
-		self.west = 0
-		if background_polling:
-			#print("starting polling thred")
-			x = threading.Thread(target= self.__class__.background_poll, args=(self,))
-			x.start()
-
-	def background_poll(self):
-		#print("thred started")
+		#self.north = 0
+		#self.east = 0
+		#self.south = 0
+		#self.west = 0
+		
+		self.mp_north = multiprocessing.Value('i')
+		self.mp_east = multiprocessing.Value('i')
+		self.mp_south = multiprocessing.Value('i')
+		self.mp_west = multiprocessing.Value('i')
+		
+		self.background_polling = multiprocessing.Process(target=self.do_polling, args=(self,))
+		self.background_polling.start()
+		
+	@property 
+	def north(self):
+		return self.mp_north.value
+	@north.setter
+	def north(self,v):
+		self.mp_north.value = v
+		
+	@property 
+	def east(self):
+		return self.mp_east.value
+	@east.setter
+	def east(self,v):
+		self.mp_east.value = v
+	
+	@property 
+	def south(self):
+		return self.mp_south.value
+	@south.setter
+	def south(self,v):
+		self.mp_south.value = v
+		
+	@property 
+	def west(self):
+		return self.mp_west.value
+	@west.setter
+	def west(self,v):
+		self.mp_west.value = v
+		
+		
+	def do_polling(self,controllor):
 		while True:
-			#print("polliugn")
-			self.poll()
+			controllor.poll()
 	def poll(self) -> None:
 		events = get_gamepad()
-		#print(events)
+		
 		for event in events:
+			print(event.code,event.state)
+			print(event.code,event.state)
 			#match event.code:
 			#	case "ABS_Y":
 			#		self.left_joy.y = event.state
@@ -80,10 +128,12 @@ class Controller:
 			elif event.code == "ABS_RX":
 				self.right_joy.x = event.state
 			elif event.code == "BTN_WEST":
+				print(self.west,"aaaaaaaaaaa")
 				self.west = event.state
+				print(self.west,"oooooooooooo")
 			elif event.code == "BTN_EAST":
 				self.east = event.state
 			elif event.code == "BTN_SOUTH":
 				self.south = event.state
 			elif event.code == "BTN_NORTH":
-				self.north = event.state
+				self.north.value = event.state
