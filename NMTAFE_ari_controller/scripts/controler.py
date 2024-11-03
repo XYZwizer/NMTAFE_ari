@@ -1,11 +1,13 @@
-from inputs import get_gamepad
+import inputs
 
 import multiprocessing
-
+import time
 
 class joyStick:
 
-	defult_max = 32768
+	posibel_max = [127,32768]
+	
+	defult_max = posibel_max[-1]
 
 	y : int
 	x : int
@@ -18,17 +20,31 @@ class joyStick:
 
 		self.x_dead_zone = 0
 		self.y_dead_zone = 0
+		
+	def findMax(self):
+		new_max = min(self.posibel_max, key=lambda i:abs(i-self.x))
+		self.x_max = new_max
+		self.y_max = new_max
 
 	def setCurrentAsDeadZone(self):
-		self.x_dead_zone = abs(self.x) + 2000
-		self.y_dead_zone = abs(self.y) + 2000
+		self.x_dead_zone = abs(self.p_x) + 0.2
+		self.y_dead_zone = abs(self.p_y) + 0.2
+		print(self.x_dead_zone)
 
 	@property
 	def direction(self):
-		x = self.x/self.x_max if abs(self.x) > self.x_dead_zone else 0
-		y = self.y/self.y_max if abs(self.y) > self.y_dead_zone else 0
+		x = self.p_x if abs(self.p_x) > self.x_dead_zone else 0.0
+		y = self.p_y if abs(self.p_y) > self.y_dead_zone else 0.0
 
 		return (x,y)
+		
+	@property
+	def p_x(self):
+		return self.x/self.x_max
+		
+	@property
+	def p_y(self):
+		return self.x/self.x_max
 		
 	@property
 	def x(self):
@@ -100,16 +116,28 @@ class Controller:
 	def west(self,v):
 		self.mp_west.value = v
 		
+	def wait_for_gamepad(self):
+				inputs.devices._post_init()	
+				print("am=======================",inputs.devices)
+				while len(inputs.devices.gamepads) == 0:
+					time.sleep(2)
+					inputs.devices._post_init()
+				print("---gamepad found---")
 		
 	def do_polling(self,controllor):
 		while True:
-			controllor.poll()
+			try:
+				controllor.poll()
+			except inputs.UnpluggedError:
+				print("no game pad detected waiting for gamepad")
+				self.wait_for_gamepad()
+			except OSError as e:
+				print("gamepad disconnected pls restart program to continue")
+				
 	def poll(self) -> None:
-		events = get_gamepad()
+		events = inputs.get_gamepad()
 		
 		for event in events:
-			print(event.code,event.state)
-			print(event.code,event.state)
 			#match event.code:
 			#	case "ABS_Y":
 			#		self.left_joy.y = event.state
@@ -128,12 +156,10 @@ class Controller:
 			elif event.code == "ABS_RX":
 				self.right_joy.x = event.state
 			elif event.code == "BTN_WEST":
-				print(self.west,"aaaaaaaaaaa")
 				self.west = event.state
-				print(self.west,"oooooooooooo")
 			elif event.code == "BTN_EAST":
 				self.east = event.state
 			elif event.code == "BTN_SOUTH":
 				self.south = event.state
 			elif event.code == "BTN_NORTH":
-				self.north.value = event.state
+				self.north = event.state
