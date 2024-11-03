@@ -11,3 +11,5 @@
 */CTestCustom.cmake
 */CTestTestfile.cmake
 */Makefile
+
+*/__pycache__/*
