@@ -28,5 +28,5 @@ if __name__ == "__main__":
 	cv2.namedWindow("live feed", 1)
 	while not rospy.is_shutdown():
 		ari.do()
-		rospy.spin()
+		#rospy.spin()
 		
