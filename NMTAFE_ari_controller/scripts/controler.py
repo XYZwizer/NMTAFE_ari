@@ -8,9 +8,11 @@ class joyStick_axis:
 		self.max = 255
 		self.min = 0
 		
-		self.dead_zone = 0.00
+		self.dead_zone = 0.03
 		
-		self.mp_real_value = multiprocessing.Value('i')
+		self.mp_real_value = multiprocessing.Value('f')
+		
+		self.real_value = (self.max+self.min)/2 #should give nutral for range so that we start at 0
 		
 	@property
 	def real_value(self):
