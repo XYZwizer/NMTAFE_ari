@@ -3,67 +3,54 @@ import inputs
 import multiprocessing
 import time
 
-class joyStick:
-
-	posibel_max = [127,32768]
-	
-	defult_max = posibel_max[-1]
-
-	y : int
-	x : int
-	def __init__(self) -> None:
-		self.mp_x = multiprocessing.Value('f')
-		self.mp_y = multiprocessing.Value('f')
-
-		self.x_max = self.defult_max
-		self.y_max = self.defult_max
-
-		self.x_dead_zone = 0
-		self.y_dead_zone = 0
+class joyStick_axis:
+	def __init__(self):
+		self.max = 255
+		self.min = 0
 		
-	def findMax(self):
-		new_max = min(self.posibel_max, key=lambda i:abs(i-self.x))
-		self.x_max = new_max
-		self.y_max = new_max
+		self.dead_zone = 0.00
+		
+		self.mp_real_value = multiprocessing.Value('i')
+		
+	@property
+	def real_value(self):
+		return self.mp_real_value.value
+	@real_value.setter
+	def real_value(self,v):
+		self.mp_real_value.value = v
+	@property
+	def norm(self):
+		normed = -(-1.0 + (2.0/(self.max-self.min)) * (self.real_value - self.min))
+		if abs(normed) < self.dead_zone:
+			return 0.0
+		return normed
+	
+
+class joyStick:
+	x : int
+	y : int
+	def __init__(self) -> None:
+		self.x = joyStick_axis()
+		self.y = joyStick_axis()
+
+	def setCurrentAsMax(self):
+		self.x.max = self.x.real_value
+		self.y.max = self.x.real_value
+		
+	def setCurrentAsMin(self):
+		self.x.min = self.x.real_value
+		self.y.min = self.x.real_value
 
 	def setCurrentAsDeadZone(self):
-		self.x_dead_zone = abs(self.p_x) + 0.2
-		self.y_dead_zone = abs(self.p_y) + 0.2
-		print(self.x_dead_zone)
+		self.x.dead_zone = abs(self.x.norm) + 0.2
+		self.y.dead_zone = abs(self.y.norm) + 0.2
 
 	@property
 	def direction(self):
-		x = self.p_x if abs(self.p_x) > self.x_dead_zone else 0.0
-		y = self.p_y if abs(self.p_y) > self.y_dead_zone else 0.0
-
-		return (x,y)
-		
-	@property
-	def p_x(self):
-		return self.x/self.x_max
-		
-	@property
-	def p_y(self):
-		return self.x/self.x_max
-		
-	@property
-	def x(self):
-		return self.mp_x.value
-	@x.setter
-	def x(self,v):
-		self.mp_x.value = v
-		
-	@property
-	def y(self):
-		return self.mp_y.value
-	@y.setter
-	def y(self,v):
-		self.mp_y.value = v
-		
-	
+		return (self.x.norm,self.y.norm)
+			
 class Controller:
 	left_joy : joyStick
-
 	right_joy : joyStick
 
 	north : int
@@ -74,11 +61,6 @@ class Controller:
 	def __init__(self, background_polling=False) -> None:
 		self.left_joy = joyStick()
 		self.right_joy = joyStick()
-
-		#self.north = 0
-		#self.east = 0
-		#self.south = 0
-		#self.west = 0
 		
 		self.mp_north = multiprocessing.Value('i')
 		self.mp_east = multiprocessing.Value('i')
@@ -118,7 +100,6 @@ class Controller:
 		
 	def wait_for_gamepad(self):
 				inputs.devices._post_init()	
-				print("am=======================",inputs.devices)
 				while len(inputs.devices.gamepads) == 0:
 					time.sleep(2)
 					inputs.devices._post_init()
@@ -148,9 +129,9 @@ class Controller:
 			#	case "ABS_RX":
 			#		self.right_joy.x = event.state
 			if event.code == "ABS_Y":
-				self.left_joy.y = event.state
+				self.left_joy.y.real_value = event.state
 			elif event.code == "ABS_X":
-				self.left_joy.x = event.state
+				self.left_joy.x.real_value = event.state
 			elif event.code == "ABS_RY":
 				self.right_joy.y = event.state
 			elif event.code == "ABS_RX":
