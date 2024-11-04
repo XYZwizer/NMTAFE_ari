@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>NMTAFE_ari_controllor</name>
+  <name>NMTAFE_ari_controller</name>
   <version>0.0.0</version>
   <description>The ari_controllor package</description>
 
