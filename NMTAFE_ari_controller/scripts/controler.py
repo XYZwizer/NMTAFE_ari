@@ -101,12 +101,13 @@ class Controller:
 		self.mp_west.value = v
 		
 	def wait_for_gamepad(self):
-				inputs.devices._post_init()	
+				inputs.devices.__init__()	
 				while len(inputs.devices.gamepads) == 0:
 					time.sleep(2)
-					inputs.devices._post_init()
-				print("---gamepad found---")
-		
+					inputs.devices.__init__()
+				print("---gamepad found---", inputs.devices.gamepads)
+	
+	# Background polling ===================================================================
 	def do_polling(self,controllor):
 		while True:
 			try:
@@ -116,34 +117,26 @@ class Controller:
 				self.wait_for_gamepad()
 			except OSError as e:
 				print("gamepad disconnected pls restart program to continue")
-				del(self)
 				
 	def poll(self) -> None:
 		events = inputs.get_gamepad()
 		
 		for event in events:
-			#match event.code:
-			#	case "ABS_Y":
-			#		self.left_joy.y = event.state
-			#	case "ABS_X":
-			#		self.left_joy.x = event.state
-			#	case "ABS_RY":
-			#		self.right_joy.y = event.state
-			#	case "ABS_RX":
-			#		self.right_joy.x = event.state
-			if event.code == "ABS_Y":
-				self.left_joy.y.real_value = event.state
-			elif event.code == "ABS_X":
-				self.left_joy.x.real_value = event.state
-			elif event.code == "ABS_RY":
-				self.right_joy.y = event.state
-			elif event.code == "ABS_RX":
-				self.right_joy.x = event.state
-			elif event.code == "BTN_WEST":
-				self.west = event.state
-			elif event.code == "BTN_EAST":
-				self.east = event.state
-			elif event.code == "BTN_SOUTH":
-				self.south = event.state
-			elif event.code == "BTN_NORTH":
-				self.north = event.state
+			match event.code:
+				case "ABS_Y":
+					self.left_joy.y.real_value = event.state
+				case "ABS_X":
+					self.left_joy.x.real_value = event.state
+				case "ABS_RY":
+					self.right_joy.y = event.state
+				case "ABS_RX":
+					self.right_joy.x = event.state
+				case "BTN_WEST":
+					self.west = event.state
+				case "BTN_EAST":
+					self.east = event.state
+				case "BTN_SOUTH":
+					self.south = event.state
+				case "BTN_NORTH":
+					self.north = event.state
+	# Background polling ===================================================================
