@@ -17,9 +17,9 @@ def wait_for_subscribers(publisher):
 def toTwist(direc : tuple):
 	twist_msg = Twist()
 	
-	speed = 1.0
+	speed = 0.5
 	
-	twist_msg.linear.x = -direc[1] * speed
+	twist_msg.linear.x = direc[1] * speed
 	twist_msg.linear.y = 0#direc[1] * speed
 	twist_msg.linear.z = 0#direc[0] * speed
 	twist_msg.angular.x = 0
@@ -34,6 +34,7 @@ class ari_mover:
 		wait_for_subscribers(self.publisher)
 		self.gamePad = Controller(background_polling=True)
 	def do(self):
+		# disable this for release
 		if self.gamePad.west == 1:
 			exit(0)
 		if self.gamePad.north == 1:
