@@ -154,7 +154,7 @@ class _ControllerBackend:
 	def do_polling(self,controllor):
 		while True:
 			try:
-				controllor.poll()
+				self.poll()
 			except inputs.UnpluggedError:
 				print("no game pad detected waiting for gamepad")
 				self.wait_for_gamepad()
