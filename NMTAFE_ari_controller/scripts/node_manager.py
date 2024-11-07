@@ -39,9 +39,6 @@ class ari_mover:
 		wait_for_subscribers(self.publisher)
 		self.gamePad = Controller()
 	def do(self):
-		if self.gamePad == None:
-			self.gamePad = Controller()
-			return
 		# disable this for release
 		if self.gamePad.west == 1:
 			exit(0)
