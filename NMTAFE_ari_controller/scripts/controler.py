@@ -102,11 +102,14 @@ class Controller:
 		
 	# Background polling ===================================================================
 	def wait_for_gamepad(self):
-				inputs.devices = inputs.DeviceManager()
-				while len(inputs.devices.gamepads) == 0:
-					time.sleep(2)
+				try:
 					inputs.devices = inputs.DeviceManager()
-				print("---gamepad found---", inputs.devices.gamepads)
+					while len(inputs.devices.gamepads) == 0:
+						time.sleep(2)
+						inputs.devices = inputs.DeviceManager()
+					print("---gamepad found---", inputs.devices.gamepads)
+				except:
+					print("detecting disconceed gamepad pls WAIT",end="\r")
 	
 	def do_polling(self,controllor):
 		while True:
