@@ -19,13 +19,17 @@ def toTwist(direc : tuple):
 	
 	forwardSpeed = 0.3
 	turnSpeed = 0.6
+	forwardValue = direc[1]
+	turnValue = direc[0]
+	if forwardValue < 0:
+		turnValue = -turnValue
 	
-	twist_msg.linear.x = direc[1] * forwardSpeed
+	twist_msg.linear.x = forwardValue * forwardSpeed
 	twist_msg.linear.y = 0#direc[1] * speed
 	twist_msg.linear.z = 0#direc[0] * speed
 	twist_msg.angular.x = 0
 	twist_msg.angular.y = 0
-	twist_msg.angular.z = direc[0] * turnSpeed
+	twist_msg.angular.z = turnValue * turnSpeed
 	return twist_msg
 
 class ari_mover:

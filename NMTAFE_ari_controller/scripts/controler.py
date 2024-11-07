@@ -142,4 +142,6 @@ class Controller:
 				self.south = event.state
 			elif event.code == "BTN_NORTH":
 				self.north = event.state
+			else:
+				print(event.code, event.state)
 	# Background polling ===================================================================
