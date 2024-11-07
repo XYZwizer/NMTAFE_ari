@@ -122,21 +122,20 @@ class Controller:
 		events = inputs.get_gamepad()
 		
 		for event in events:
-			match event.code:
-				case "ABS_Y":
-					self.left_joy.y.real_value = event.state
-				case "ABS_X":
-					self.left_joy.x.real_value = event.state
-				case "ABS_RY":
-					self.right_joy.y = event.state
-				case "ABS_RX":
-					self.right_joy.x = event.state
-				case "BTN_WEST":
-					self.west = event.state
-				case "BTN_EAST":
-					self.east = event.state
-				case "BTN_SOUTH":
-					self.south = event.state
-				case "BTN_NORTH":
-					self.north = event.state
+			if event.code == "ABS_Y":
+				self.left_joy.y.real_value = event.state
+			elif event.code == "ABS_X":
+				self.left_joy.x.real_value = event.state
+			elif event.code == "ABS_RY":
+				self.right_joy.y.real_value = event.state
+			elif event.code == "ABS_RX":
+				self.right_joy.x.real_value = event.state
+			elif event.code == "BTN_WEST":
+				self.west = event.state
+			elif event.code == "BTN_EAST":
+				self.east = event.state
+			elif event.code == "BTN_SOUTH":
+				self.south = event.state
+			elif event.code == "BTN_NORTH":
+				self.north = event.state
 	# Background polling ===================================================================
