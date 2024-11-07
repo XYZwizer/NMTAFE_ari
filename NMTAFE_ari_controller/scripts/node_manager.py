@@ -47,5 +47,5 @@ class ari_mover:
 			exit(0)
 		if self.gamePad.north == 1:
 			self.gamePad.left_joy.setCurrentAsDeadZone()
-		print(f"{self.gamePad.left_joy.direction}", end="                        \r")
+		#print(f"{self.gamePad.left_joy.direction}", end="                        \r")
 		self.publisher.publish(toTwist(self.gamePad.left_joy.direction, self.gamePad.lb))

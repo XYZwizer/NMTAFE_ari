@@ -182,5 +182,17 @@ class _ControllerBackend:
 				self.south = event.state
 			elif event.code == "BTN_NORTH":
 				self.north = event.state
+			elif event.code == "BTN_TR1":
+				self.rb = event.state
+			elif event.code == "BTN_TL1":
+				self.lb = event.state
+			elif event.code == "BTN_TR2":
+				self.rt = event.state
+			elif event.code == "BTN_TL2":
+				self.lt = event.state
+			# elif event.code == "BTN_START":
+			# 	self.start = event.state
+			# elif event.code == "BTN_SELECT":
+			# 	self.back = event.state
 			else:
-				print(event.code, event.state)
+				print(event.code + " " + event.state)
