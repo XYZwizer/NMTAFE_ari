@@ -1,0 +1,11 @@
+[Unit]
+Description = NMTAFE ARI mover service
+After = pal.service
+
+[Service]
+Type = forking
+ExecStart = /usr/bin/nmtafe.sh
+TimeoutSec=600
+
+[Install]
+WantedBy = multi-user.target
