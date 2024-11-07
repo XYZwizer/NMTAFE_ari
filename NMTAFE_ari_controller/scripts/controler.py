@@ -52,6 +52,7 @@ class joyStick:
 			
 class Controller:
 	def __init__(self) -> None:
+		Backend = _ControllerBackend()
 		self.left_joy = joyStick()
 		self.right_joy = joyStick()
 		
@@ -59,11 +60,16 @@ class Controller:
 		self.mp_east = multiprocessing.Value('i')
 		self.mp_south = multiprocessing.Value('i')
 		self.mp_west = multiprocessing.Value('i')
-		
-		self.background_polling = multiprocessing.Process(target=self.do_polling, args=(self,))
+		self.mp_lb = multiprocessing.Value('i')
+		self.mp_rb = multiprocessing.Value('i')
+		self.mp_lt = multiprocessing.Value('i')
+		self.mp_rt = multiprocessing.Value('i')
+		self.mp_back = multiprocessing.Value('i')
+		self.mp_start = multiprocessing.Value('i')
+
+		self.background_polling = multiprocessing.Process(target=Backend.do_polling, args=(self,))
 		self.background_polling.start()
 
-		
 	@property 
 	def north(self):
 		return self.mp_north.value
@@ -91,8 +97,50 @@ class Controller:
 	@west.setter
 	def west(self,v):
 		self.mp_west.value = v
-		
-	# Background polling ===================================================================
+
+	@property
+	def lb(self):
+		return self.mp_lb.value
+	@lb.setter
+	def lb(self,v):
+		self.mp_lb.value = v
+
+	@property
+	def rb(self):	
+		return self.mp_rb.value
+	@rb.setter
+	def rb(self,v):
+		self.mp_rb.value = v
+
+	@property
+	def lt(self):
+		return self.mp_lt.value
+	@lt.setter
+	def lt(self,v):
+		self.mp_lt.value = v
+
+	@property
+	def rt(self):
+		return self.mp_rt.value
+	@rt.setter
+	def rt(self,v):
+		self.mp_rt.value = v
+
+	@property
+	def back(self):
+		return self.mp_back.value
+	@back.setter
+	def back(self,v):
+		self.mp_back.value = v
+
+	@property
+	def start(self):
+		return self.mp_start.value
+	@start.setter
+	def start(self,v):
+		self.mp_start.value = v
+
+class _ControllerBackend:
 	def wait_for_gamepad(self):
 				try:
 					inputs.devices = inputs.DeviceManager()
@@ -136,4 +184,3 @@ class Controller:
 				self.north = event.state
 			else:
 				print(event.code, event.state)
-	# Background polling ===================================================================
