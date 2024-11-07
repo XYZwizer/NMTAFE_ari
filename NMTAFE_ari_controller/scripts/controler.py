@@ -173,7 +173,8 @@ class Controller:
 			# elif event.code == "BTN_SELECT":
 			# 	self.back = event.state
 			else:
-				print(event.code , event.state)
+				#print(event.code , event.state)
+				pass
 
 class _ControllerBackend:
 	def wait_for_gamepad(self):
