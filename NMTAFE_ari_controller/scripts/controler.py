@@ -100,14 +100,14 @@ class Controller:
 	def west(self,v):
 		self.mp_west.value = v
 		
+	# Background polling ===================================================================
 	def wait_for_gamepad(self):
-				inputs.devices.__init__()	
+				inputs.devices = inputs.DeviceManager()
 				while len(inputs.devices.gamepads) == 0:
 					time.sleep(2)
-					inputs.devices.__init__()
+					inputs.devices = inputs.DeviceManager()
 				print("---gamepad found---", inputs.devices.gamepads)
 	
-	# Background polling ===================================================================
 	def do_polling(self,controllor):
 		while True:
 			try:
