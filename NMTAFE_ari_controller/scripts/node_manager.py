@@ -17,14 +17,15 @@ def wait_for_subscribers(publisher):
 def toTwist(direc : tuple):
 	twist_msg = Twist()
 	
-	speed = 0.5
+	forwardSpeed = 0.3
+	turnSpeed = 0.6
 	
-	twist_msg.linear.x = direc[1] * speed
+	twist_msg.linear.x = direc[1] * forwardSpeed
 	twist_msg.linear.y = 0#direc[1] * speed
 	twist_msg.linear.z = 0#direc[0] * speed
 	twist_msg.angular.x = 0
 	twist_msg.angular.y = 0
-	twist_msg.angular.z = -direc[0] * speed
+	twist_msg.angular.z = direc[0] * turnSpeed
 	return twist_msg
 
 class ari_mover:
