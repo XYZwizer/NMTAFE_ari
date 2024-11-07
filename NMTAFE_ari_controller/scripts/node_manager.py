@@ -14,19 +14,19 @@ def wait_for_subscribers(publisher):
 		if rospy.is_shutdown():
 			raise Exception("Got shutdown request before subscribers connected")
 
-def toTwist(direc : tuple):
+def toTwist(direc : tuple, boost : bool = False) -> Twist:
 	twist_msg = Twist()
 	
-	forwardSpeed = 0.3
-	turnSpeed = 0.6
+	forwardSpeed = 1 if boost else 0.3
+	turnSpeed = 1 if boost else 0.6
 	forwardValue = direc[1]
 	turnValue = direc[0]
 	if forwardValue < 0:
 		turnValue = -turnValue
 	
 	twist_msg.linear.x = forwardValue * forwardSpeed
-	twist_msg.linear.y = 0#direc[1] * speed
-	twist_msg.linear.z = 0#direc[0] * speed
+	twist_msg.linear.y = 0
+	twist_msg.linear.z = 0
 	twist_msg.angular.x = 0
 	twist_msg.angular.y = 0
 	twist_msg.angular.z = turnValue * turnSpeed
@@ -48,4 +48,4 @@ class ari_mover:
 		if self.gamePad.north == 1:
 			self.gamePad.left_joy.setCurrentAsDeadZone()
 		print(f"{self.gamePad.left_joy.direction}", end="                        \r")
-		self.publisher.publish(toTwist(self.gamePad.left_joy.direction))
+		self.publisher.publish(toTwist(self.gamePad.left_joy.direction, self.gamePad.lb))
