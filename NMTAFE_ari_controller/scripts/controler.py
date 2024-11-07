@@ -140,28 +140,6 @@ class Controller:
 	def start(self,v):
 		self.mp_start.value = v
 
-class _ControllerBackend:
-	def wait_for_gamepad(self):
-				try:
-					inputs.devices = inputs.DeviceManager()
-					while len(inputs.devices.gamepads) == 0:
-						time.sleep(2)
-						inputs.devices = inputs.DeviceManager()
-					print("---gamepad found---", inputs.devices.gamepads)
-				except:
-					print("detecting disconceed gamepad pls WAIT",end="\r")
-	
-	def do_polling(self,controllor):
-		while True:
-			try:
-				self.poll()
-			except inputs.UnpluggedError:
-				print("no game pad detected waiting for gamepad")
-				self.wait_for_gamepad()
-			except OSError as e:
-				print("gamepad disconnected pls restart program to continue")
-				self.wait_for_gamepad()
-				
 	def poll(self) -> None:
 		events = inputs.get_gamepad()
 		
@@ -196,3 +174,26 @@ class _ControllerBackend:
 			# 	self.back = event.state
 			else:
 				print(event.code + " " + event.state)
+
+class _ControllerBackend:
+	def wait_for_gamepad(self):
+				try:
+					inputs.devices = inputs.DeviceManager()
+					while len(inputs.devices.gamepads) == 0:
+						time.sleep(2)
+						inputs.devices = inputs.DeviceManager()
+					print("---gamepad found---", inputs.devices.gamepads)
+				except:
+					print("detecting disconceed gamepad pls WAIT",end="\r")
+	
+	def do_polling(self,controllor):
+		while True:
+			try:
+				controllor.poll()
+			except inputs.UnpluggedError:
+				print("no game pad detected waiting for gamepad")
+				self.wait_for_gamepad()
+			except OSError as e:
+				print("gamepad disconnected pls restart program to continue")
+				self.wait_for_gamepad()
+				
