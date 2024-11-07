@@ -1,5 +1,4 @@
 import inputs
-
 import multiprocessing
 import time
 
@@ -13,7 +12,7 @@ class joyStick_axis:
 		self.mp_real_value = multiprocessing.Value('f')
 		
 		self.real_value = (self.max+self.min)/2 #should give nutral for range so that we start at 0
-		
+
 	@property
 	def real_value(self):
 		return self.mp_real_value.value
@@ -52,15 +51,7 @@ class joyStick:
 		return (self.x.norm,self.y.norm)
 			
 class Controller:
-	left_joy : joyStick
-	right_joy : joyStick
-
-	north : int
-	east : int
-	south : int
-	west : int
-
-	def __init__(self, background_polling=False) -> None:
+	def __init__(self) -> None:
 		self.left_joy = joyStick()
 		self.right_joy = joyStick()
 		
@@ -71,6 +62,7 @@ class Controller:
 		
 		self.background_polling = multiprocessing.Process(target=self.do_polling, args=(self,))
 		self.background_polling.start()
+
 		
 	@property 
 	def north(self):

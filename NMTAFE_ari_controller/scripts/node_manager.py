@@ -37,10 +37,10 @@ class ari_mover:
 		rospy.init_node('ari_controller_teli_NMTAFE')
 		self.publisher = rospy.Publisher('/mobile_base_controller/cmd_vel', Twist, queue_size = 1)
 		wait_for_subscribers(self.publisher)
-		self.gamePad = Controller(background_polling=True)
+		self.gamePad = Controller()
 	def do(self):
 		if self.gamePad == None:
-			self.gamePad = Controller(background_polling=True)
+			self.gamePad = Controller()
 			return
 		# disable this for release
 		if self.gamePad.west == 1:
