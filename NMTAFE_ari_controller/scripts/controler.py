@@ -116,7 +116,7 @@ class Controller:
 				self.wait_for_gamepad()
 			except OSError as e:
 				print("gamepad disconnected pls restart program to continue")
-				self.wait_for_gamepad()
+				del(self)
 				
 	def poll(self) -> None:
 		events = inputs.get_gamepad()

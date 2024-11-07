@@ -35,6 +35,9 @@ class ari_mover:
 		wait_for_subscribers(self.publisher)
 		self.gamePad = Controller(background_polling=True)
 	def do(self):
+		if self.gamePad == None:
+			self.gamePad = Controller(background_polling=True)
+			return
 		# disable this for release
 		if self.gamePad.west == 1:
 			exit(0)
