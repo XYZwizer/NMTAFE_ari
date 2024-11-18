@@ -18,7 +18,7 @@ print("done importing lib")
 
 class ASR_llama_chat_bot(object):
     def __init__(self):
-        self.chatModel = chat.ChatModel()
+        self.chatModel = ChatModel()
 
         self.asr_sub = rospy.Subscriber(
             '/humans/voices/anonymous_speaker/speech',
