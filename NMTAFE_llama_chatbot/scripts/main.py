@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-print("importing lib")
-import rospy
-import time
-
-from actionlib import SimpleActionClient
-from hri_msgs.msg import LiveSpeech
-from pal_interaction_msgs.msg import TtsAction, TtsGoal
-from std_msgs.msg import String
-
 from chat import ChatModel
+from std_msgs.msg import String
+from pal_interaction_msgs.msg import TtsAction, TtsGoal
+from hri_msgs.msg import LiveSpeech
+from actionlib import SimpleActionClient
+import time
+import rospy
+print("importing lib")
+
 
 print("done importing lib")
-
 
 
 # The following demo subscribes to speech-to-text output and triggers TTS
@@ -20,7 +18,7 @@ print("done importing lib")
 
 class ASR_llama_chat_bot(object):
     def __init__(self):
-    	self.chatModel = chat.ChatModel()
+        self.chatModel = chat.ChatModel()
 
         self.asr_sub = rospy.Subscriber(
             '/humans/voices/anonymous_speaker/speech',
@@ -41,13 +39,12 @@ class ASR_llama_chat_bot(object):
         # 'final' is only set at the end, when a full sentence is
         # recognized.
         sentence = msg.final
-	if sentence = '':
-		return
-		
-	self.tts_output(self.chatModel.Message(sentence))
-	
+        if sentence == '':
+            return
+
+        self.tts_output(self.chatModel.Message(sentence))
+
         rospy.loginfo("Understood sentence: " + sentence)
-	
 
     def tts_output(self, answer):
 
@@ -56,6 +53,7 @@ class ASR_llama_chat_bot(object):
         goal.rawtext.lang_id = self.language
         goal.rawtext.text = str(answer)
         self.tts_client.send_goal_and_wait(goal)
+
 
 if __name__ == "__main__":
     rospy.init_node("asr_tutorial")
