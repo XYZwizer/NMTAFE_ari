@@ -50,8 +50,12 @@ Please respond in under 20 words.
         old_len = len(self.tokenized_chat[0])
         self.tokenized_chat = self.model.generate(
             self.tokenized_chat, max_new_tokens=64, temperature=0.1)
-
-        print(time.time() - Stime)
+        seconds = time.time() - Stime
+        minutes = 0
+        while seconds > 60:
+            minutes += 1
+            seconds -= 60
+        print(f"Time taken: {minutes}m {seconds}s")
         outputText = self.tokenizer.decode(self.tokenized_chat[0][old_len+4:-2])
         outputComplete = self.tokenized_chat[0][-1] == self.tokenizer.eos_token_id
         if not (outputComplete):
