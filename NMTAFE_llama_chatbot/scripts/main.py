@@ -42,7 +42,7 @@ class ASR_llama_chat_bot(object):
         if sentence == '':
             return
 
-        self.tts_output(self.chatModel.Message(sentence))
+        self.tts_output(self.chatModel.message(sentence))
 
         rospy.loginfo("Understood sentence: " + sentence)
 
