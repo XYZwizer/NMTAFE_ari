@@ -30,21 +30,22 @@ class ASR_llama_chat_bot(object):
 
         self.language = "en_US"
         rospy.loginfo("ASR_llama_chat_bot ready")
+        self.processing = False
 
     def asr_result(self, msg):
-
         # the LiveSpeech message has two main field: incremental and final.
         # 'incremental' is updated has soon as a word is recognized, and
         # will change while the sentence recognition progresses.
         # 'final' is only set at the end, when a full sentence is
         # recognized.
         sentence = msg.final
-        if sentence == '':
+        sentence_word_count = len(sentence.split())
+        if sentence == '' or sentence_word_count < 4 or self.processing:
             return
-        print(sentence)
-        self.tts_output(self.chatModel.message(sentence))
-
+        self.processing = True
         rospy.loginfo("Understood sentence: " + sentence)
+        self.tts_output(self.chatModel.message(sentence))
+        self.processing = False
 
     def tts_output(self, answer):
 
