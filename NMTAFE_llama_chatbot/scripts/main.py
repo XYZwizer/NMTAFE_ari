@@ -56,6 +56,6 @@ class ASR_llama_chat_bot(object):
 
 
 if __name__ == "__main__":
-    rospy.init_node("asr_tutorial")
-    node = ASRDemo()
+    rospy.init_node("asr_llama_chat_bot")
+    node = ASR_llama_chat_bot()
     rospy.spin()
