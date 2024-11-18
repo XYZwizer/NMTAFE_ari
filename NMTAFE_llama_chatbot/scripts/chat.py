@@ -39,8 +39,7 @@ Please respond in under 20 words.
         self.doNextPromt(spawnMessage)
 
     def doNextPromt(self, promnt):
-        new_tokenized_message = tokenizer(f"<|start_header_id|>user<|end_header_id|>{
-                                          promnt}<|eot_id|>", return_tensors="pt")
+        new_tokenized_message = tokenizer(f"<|start_header_id|>user<|end_header_id|>{promnt}<|eot_id|>", return_tensors="pt")
 
         self.tokenized_chat = torch.cat(
             (self.tokenized_chat, new_tokenized_message['input_ids']), dim=1)
