@@ -12,10 +12,10 @@ class ChatModel:
         print("loading model")
 
         # You may want to use bfloat16 and/or move to GPU here
-        self.model = AutoModelForCausalLM.from_pretrained( checkpoint, device_map="cpu")
+        self.model = AutoModelForCausalLM.from_pretrained( checkpoint, device_map="cpu") #change: device_map = cuda when it has it
         self.chat = Chat(self.tokenizer, self.model)
 
-    def message(self, message):
+    def message(self, message): #change: move to be part of Chat class. make ChatModel a factory
         text, outputComplete = self.chat.doNextPromt(message)
         if not outputComplete:
             self.chat = Chat(self.tokenizer, self.model, "Your memory just had an error")
@@ -50,11 +50,14 @@ Please respond in under 20 words.
         old_len = len(self.tokenized_chat[0])
         self.tokenized_chat = self.model.generate(
             self.tokenized_chat, max_new_tokens=64, temperature=0.1)
+
         seconds = time.time() - Stime
+        #change: replace with strftime
         minutes = 0
         while seconds > 60:
             minutes += 1
             seconds -= 60
+
         print(f"Time taken: {minutes}m {seconds}s")
         outputText = self.tokenizer.decode(self.tokenized_chat[0][old_len+4:-2])
         outputComplete = self.tokenized_chat[0][-1] == self.tokenizer.eos_token_id
