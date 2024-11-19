@@ -5,6 +5,7 @@ from std_msgs.msg import String
 from pal_interaction_msgs.msg import TtsAction, TtsGoal
 from hri_msgs.msg import LiveSpeech
 from actionlib import SimpleActionClient
+import asyncio
 import time
 import rospy
 print("importing lib")
@@ -45,6 +46,11 @@ class ASR_llama_chat_bot(object):
         self.processing = True
         rospy.loginfo("Understood sentence: " + sentence)
         self.tts_output(self.chatModel.message(sentence))
+        asyncio.run(self.clear_message_queue())
+
+    async def clear_message_queue(self):
+        #wait 1 second asynchronusly
+        await asyncio.sleep(1)
         self.processing = False
 
     def tts_output(self, answer):

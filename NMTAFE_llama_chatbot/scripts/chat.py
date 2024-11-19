@@ -11,8 +11,10 @@ class ChatModel:
         self.tokenizer = AutoTokenizer.from_pretrained(checkpoint)
         print("loading model")
 
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+
         # You may want to use bfloat16 and/or move to GPU here
-        self.model = AutoModelForCausalLM.from_pretrained( checkpoint, device_map="cpu") #change: device_map = cuda when it has it
+        self.model = AutoModelForCausalLM.from_pretrained( checkpoint, device_map=device)
         self.chat = Chat(self.tokenizer, self.model)
 
     def message(self, message): #change: move to be part of Chat class. make ChatModel a factory
@@ -48,20 +50,12 @@ Please respond in under 20 words.
         print("prompting")
         Stime = time.time()
         old_len = len(self.tokenized_chat[0])
-        self.tokenized_chat = self.model.generate(
-            self.tokenized_chat, max_new_tokens=64, temperature=0.1)
+        self.tokenized_chat = self.model.generate(self.tokenized_chat, max_new_tokens=64, temperature=0.1)
 
-        seconds = time.time() - Stime
-        #change: replace with strftime
-        minutes = 0
-        while seconds > 60:
-            minutes += 1
-            seconds -= 60
-
-        print(f"Time taken: {minutes}m {seconds}s")
+        print(f"Time taken: {time.strftime("%Mm %Ss", time.gmtime(time.time() - Stime))}")
         outputText = self.tokenizer.decode(self.tokenized_chat[0][old_len+4:-2])
         outputComplete = self.tokenized_chat[0][-1] == self.tokenizer.eos_token_id
         if not (outputComplete):
             outputText += " ERR: Overflow"
-
+            
         return (outputText, outputComplete)
