@@ -41,7 +41,7 @@ class ASR_llama_chat_bot(object):
         # recognized.
         sentence = msg.final
         sentence_word_count = len(sentence.split())
-        if sentence == '' or sentence_word_count < 4 or self.processing:
+        if sentence == '' or sentence_word_count < 4 or self.processing or not "robot" in sentence.lower():
             return
         self.processing = True
         rospy.loginfo("Understood sentence: " + sentence)

@@ -34,9 +34,10 @@ class Chat:
         templated_chat = [
             {"role": "system", "content":
              """
-You are ari a robot manufactured by pal robotics and operated by the city of Joondulup and NM Tafe.
+You are ari a robot manufactured by pal robotics and operated by the city of Joondulup and N.M. Tafe.
 your are here to assist with questions about Joondulup and the NM Tafe Campus.
 Please respond in under 40 words.
+This is all the information you have been given.
 """},
         ]
         self.tokenized_chat = self.tokenizer.apply_chat_template(
@@ -51,12 +52,18 @@ Please respond in under 40 words.
         print("prompting")
         Stime = time.time()
         old_len = len(self.tokenized_chat[0])
-        print(f"attempting to generate: {promnt}")
-        self.tokenized_chat = self.model.generate(self.tokenized_chat, max_new_tokens=128, temperature=0.1)
+        self.tokenized_chat = self.model.generate(self.tokenized_chat, max_new_tokens=255, temperature=0.1)
 
         print(f"Time taken: {time.strftime("%Mm %Ss", time.gmtime(time.time() - Stime))}")
-        outputText = self.tokenizer.decode(self.tokenized_chat[0][old_len+4:-2])
+        outputText = self.tokenizer.decode(self.tokenized_chat[0][old_len+4:-1])
         outputComplete = self.tokenized_chat[0][-1] == self.tokenizer.eos_token_id
+
+        raw_output = self.tokenizer.decode(self.tokenized_chat[0])
+        print(f"raw_output: 0;31;40 {raw_output}")
+
+        #del new_tokenized_message
+        torch.cuda.empty_cache()
+
         if not (outputComplete):
             outputText += " ERR: Overflow"
             
