@@ -16,4 +16,5 @@
 
 *.pyc
 /.vscode
-model/*
+/NMTAFE_llama_chatbot/testing/model
+/NMTAFE_llama_chatbot/scripts/model
