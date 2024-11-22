@@ -27,6 +27,7 @@ class ASR_llama_chat_bot(object):
 
         self.language = "en_US"
         rospy.loginfo("ASR_llama_chat_bot ready")
+        print("ASR_llama_chat_bot ready")
         self.processing = False
 
     def asr_result(self, msg):
@@ -37,7 +38,12 @@ class ASR_llama_chat_bot(object):
         # recognized.
         sentence = msg.final
         sentence_word_count = len(sentence.split())
-        if sentence == '' or sentence_word_count < 4 or self.processing or not "robot" in sentence.lower():
+        empty_sentence = sentence == ''
+        sentence_word_count_less_than_4 = sentence_word_count < 4
+        processing = self.processing
+        robot_not_in_sentence = not "robot" in sentence.lower()
+        if empty_sentence or sentence_word_count_less_than_4 or processing or robot_not_in_sentence:
+            rospy.loginfo("Ignoring sentence: " + sentence + "empty_sentence: " + str(empty_sentence) + " sentence_word_count_less_than_4: " + str(sentence_word_count_less_than_4) + " processing: " + str(processing) + " robot_not_in_sentence: " + str(robot_not_in_sentence))
             return
         self.processing = True
         rospy.loginfo("Understood sentence: " + sentence)
