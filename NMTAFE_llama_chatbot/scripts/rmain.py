@@ -28,13 +28,14 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
             self.asr_result)
 
         self.tts_client = SimpleActionClient("/tts", TtsAction)
-        self.tts_client.wait_for_server()
+        
 
         self.language = "en_US"
         rospy.loginfo("ASR_llama_chat_bot ready")
         #print("ASR_llama_chat_bot ready")
         self.processing = False
         self.reset_next = False
+        self.tts_client.wait_for_server()
 
     def asr_result(self, msg):
         print(self.__dir__())
