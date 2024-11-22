@@ -37,6 +37,7 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         self.reset_next = False
 
     def asr_result(self, msg):
+        print(type(self))
         # the LiveSpeech message has two main field: incremental and final.
         # 'incremental' is updated has soon as a word is recognized, and
         # will change while the sentence recognition progresses.
