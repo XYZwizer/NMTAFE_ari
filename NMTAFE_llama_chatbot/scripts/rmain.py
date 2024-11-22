@@ -56,7 +56,7 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         self.processing = True
         rospy.loginfo("\nUnderstood: " + sentence)
         response = self.chatModel.query(sentence)
-        #rospy.loginfo("\nResponse: " + response + "\n")
+        rospy.loginfo("Got Response")
         #if the response is over 20 words, reapply the system prompt
         bad_message = len(response.split()) > 25
         if bad_message:
@@ -77,7 +77,7 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         goal = TtsGoal()
         goal.rawtext.lang_id = self.language
         goal.rawtext.text = str(answer)
-        self.tts_client.send_goal_and_wait(goal)
+        self.tts_client.send_goal(goal)
 
 
 if __name__ == "__main__":
