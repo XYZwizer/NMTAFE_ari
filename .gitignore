@@ -18,3 +18,4 @@
 /.vscode
 /NMTAFE_llama_chatbot/testing/model
 /NMTAFE_llama_chatbot/scripts/model
+/NMTAFE_llama_chatbot/njs server/node_modules
