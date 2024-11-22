@@ -47,7 +47,7 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         empty_sentence = sentence == ''
         sentence_word_count_less_than_4 = sentence_word_count < 4
         skip = self.processing
-        robot_not_in_sentence = not "robot" in sentence.lower()
+        robot_not_in_sentence = not "isabella" in sentence.lower()
         if empty_sentence or sentence_word_count_less_than_4 or skip or robot_not_in_sentence:
             if not empty_sentence:
                 rospy.loginfo("Ignoring sentence: " + sentence + " || under4: " + str(sentence_word_count_less_than_4) + " halted: " + str(skip) + " no robot: " + str(robot_not_in_sentence))
@@ -59,6 +59,7 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         #if the response is over 20 words, reapply the system prompt
         bad_message = len(response.split()) > 20
         if bad_message:
+            rospy.loginfo("\nResponse too long: " + response + "\n")
             self.chatModel.query("You have just been reset", reset=True)
         else:
             self.tts_output(response)
