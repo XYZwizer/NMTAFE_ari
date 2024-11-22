@@ -46,11 +46,11 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         sentence_word_count = len(sentence.split())
         empty_sentence = sentence == ''
         sentence_word_count_less_than_4 = sentence_word_count < 4
-        processing = self.processing
+        skip = self.processing
         robot_not_in_sentence = not "robot" in sentence.lower()
-        if empty_sentence or sentence_word_count_less_than_4 or processing or robot_not_in_sentence:
+        if empty_sentence or sentence_word_count_less_than_4 or skip or robot_not_in_sentence:
             if not empty_sentence:
-                rospy.loginfo("Ignoring sentence: " + sentence + " || under4: " + str(sentence_word_count_less_than_4) + " halted: " + str(processing) + " no robot: " + str(robot_not_in_sentence))
+                rospy.loginfo("Ignoring sentence: " + sentence + " || under4: " + str(sentence_word_count_less_than_4) + " halted: " + str(skip) + " no robot: " + str(robot_not_in_sentence))
             return
 
         self.processing = True
