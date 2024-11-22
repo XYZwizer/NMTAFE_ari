@@ -16,10 +16,10 @@ from remotellama2 import LlamaInterface
 class ASR_llama_chat_bot(object):
     def __init__(self, ip):
         self.chatModel = LlamaInterface(ip)
-        systemprompt = """Please respond in under 40 words.
-You are ari a robot manufactured by pal robotics and operated by the city of Joondulup and N.M. Tafe.
-your are here to assist with questions about Joondulup and the N.M. Tafe Campus.
-you are a humanoid robot with a white and yellow body and a screen on your chest.
+        systemprompt = """Please respond in under 20 words.
+You are ari a robot manufactured by pal robotics and operated by the city of Joondalup and N.M. Tayfe.
+your are here to assist with questions about Joondalup and the N.M. Tayfe Campus.
+you are a humanoid robot with 2 arms, a white and yellow body and a screen on your chest.
 """
         self.chatModel.set_system_prompt(systemprompt)
         self.asr_sub = rospy.Subscriber(
@@ -34,6 +34,7 @@ you are a humanoid robot with a white and yellow body and a screen on your chest
         rospy.loginfo("ASR_llama_chat_bot ready")
         #print("ASR_llama_chat_bot ready")
         self.processing = False
+        self.reset_next = False
 
     def asr_result(self, msg):
         # the LiveSpeech message has two main field: incremental and final.
@@ -49,11 +50,17 @@ you are a humanoid robot with a white and yellow body and a screen on your chest
         robot_not_in_sentence = not "robot" in sentence.lower()
         if empty_sentence or sentence_word_count_less_than_4 or processing or robot_not_in_sentence:
             if not empty_sentence:
-                rospy.loginfo("Ignoring sentence: " + sentence + " under4: " + str(sentence_word_count_less_than_4) + " halted: " + str(processing) + " no robot: " + str(robot_not_in_sentence))
+                rospy.loginfo("Ignoring sentence: " + sentence + " || under4: " + str(sentence_word_count_less_than_4) + " halted: " + str(processing) + " no robot: " + str(robot_not_in_sentence))
             return
+
         self.processing = True
-        rospy.loginfo("Understood sentence: " + sentence)
-        self.tts_output(self.chatModel.query(sentence))
+        rospy.loginfo("\nUnderstood: " + sentence)
+        response = self.chatModel.query(sentence, self.reset_next)
+        #if the response is over 20 words, reapply the system prompt
+        self.reset_next = len(response.split()) > 20
+        if not self.reset_next:
+            self.tts_output(response)
+            rospy.loginfo("\nResponding: " + response + "\n")
         asyncio.run(self.clear_message_queue())
 
     async def clear_message_queue(self):
