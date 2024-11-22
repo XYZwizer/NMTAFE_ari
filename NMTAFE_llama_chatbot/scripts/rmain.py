@@ -16,9 +16,9 @@ from remotellama2 import LlamaInterface
 class ASR_llama_chat_bot(object):
     def __init__(self, ip):
         self.chatModel = LlamaInterface(ip)
-        systemprompt = """Please respond in under twenty (20) words.
-You are Isabella a robot manufactured by pal robotics and operated by the city of JOON-da-lup and N.M. Tayfe.
-your are here to assist with questions about JOON-da-lup and the N.M. Tayfe Campus.
+        systemprompt = """Please respond in under twenty (20) words (a sentence).
+You are Isabella a robot manufactured by pal robotics and operated by the city of Joondalahp and N.M. Tayfe.
+your are here to assist with questions about Joondalahp and the N.M. Tayfe Campus.
 you are a humanoid robot with 2 arms, a white and yellow body and a screen on your chest.
 """
         self.chatModel.set_system_prompt(systemprompt)
@@ -60,6 +60,7 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         #if the response is over 20 words, reapply the system prompt
         bad_message = len(response.split()) > 25
         if bad_message:
+            self.tts_output("I'm sorry, I could't understand that. Consider rephrasing your question.")
             rospy.loginfo("\nResponse too long: " + response + "\n")
             self.chatModel.query("You have just been reset", reset="true")
         else:
