@@ -34,11 +34,9 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         rospy.loginfo("ASR_llama_chat_bot ready")
         #print("ASR_llama_chat_bot ready")
         self.processing = False
-        self.reset_next = False
         self.tts_client.wait_for_server()
 
     def asr_result(self, msg):
-        print(self.__dir__())
         # the LiveSpeech message has two main field: incremental and final.
         # 'incremental' is updated has soon as a word is recognized, and
         # will change while the sentence recognition progresses.
@@ -57,10 +55,12 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
 
         self.processing = True
         rospy.loginfo("\nUnderstood: " + sentence)
-        response = self.chatModel.query(sentence, self.reset_next)
+        response = self.chatModel.query(sentence)
         #if the response is over 20 words, reapply the system prompt
-        self.reset_next = len(response.split()) > 20
-        if not self.reset_next:
+        bad_message = len(response.split()) > 20
+        if bad_message:
+            self.chatModel.query("You have just been reset", reset=True)
+        else:
             self.tts_output(response)
             rospy.loginfo("\nResponding: " + response + "\n")
         asyncio.run(self.clear_message_queue())
