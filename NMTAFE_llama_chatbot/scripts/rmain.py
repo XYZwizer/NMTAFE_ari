@@ -61,7 +61,7 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         bad_message = len(response.split()) > 20
         if bad_message:
             #rospy.loginfo("\nResponse too long: " + response + "\n")
-            self.chatModel.query("You have just been reset", reset=True)
+            self.chatModel.query("You have just been reset", reset="true")
         else:
             self.tts_output(response)
             #rospy.loginfo("\nResponding: " + response + "\n")
