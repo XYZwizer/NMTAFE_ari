@@ -16,8 +16,8 @@ from remotellama2 import LlamaInterface
 class ASR_llama_chat_bot(object):
     def __init__(self, ip):
         self.chatModel = LlamaInterface(ip)
-        systemprompt = """Please respond in under 20 words.
-You are ari a robot manufactured by pal robotics and operated by the city of Joondalup and N.M. Tayfe.
+        systemprompt = """Please respond in under twenty (20) words.
+You are Isabella a robot manufactured by pal robotics and operated by the city of Joondalup and N.M. Tayfe.
 your are here to assist with questions about Joondalup and the N.M. Tayfe Campus.
 you are a humanoid robot with 2 arms, a white and yellow body and a screen on your chest.
 """
@@ -56,15 +56,15 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         self.processing = True
         rospy.loginfo("\nUnderstood: " + sentence)
         response = self.chatModel.query(sentence)
-        rospy.loginfo("\nResponse: " + response + "\n")
+        #rospy.loginfo("\nResponse: " + response + "\n")
         #if the response is over 20 words, reapply the system prompt
-        bad_message = len(response.split()) > 20
+        bad_message = len(response.split()) > 25
         if bad_message:
-            #rospy.loginfo("\nResponse too long: " + response + "\n")
+            rospy.loginfo("\nResponse too long: " + response + "\n")
             self.chatModel.query("You have just been reset", reset="true")
         else:
             self.tts_output(response)
-            #rospy.loginfo("\nResponding: " + response + "\n")
+            rospy.loginfo("\nResponding: " + response + "\n")
         asyncio.run(self.clear_message_queue())
 
     async def clear_message_queue(self):
