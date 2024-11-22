@@ -56,14 +56,15 @@ you are a humanoid robot with 2 arms, a white and yellow body and a screen on yo
         self.processing = True
         rospy.loginfo("\nUnderstood: " + sentence)
         response = self.chatModel.query(sentence)
+        rospy.loginfo("\nResponse: " + response + "\n")
         #if the response is over 20 words, reapply the system prompt
         bad_message = len(response.split()) > 20
         if bad_message:
-            rospy.loginfo("\nResponse too long: " + response + "\n")
+            #rospy.loginfo("\nResponse too long: " + response + "\n")
             self.chatModel.query("You have just been reset", reset=True)
         else:
             self.tts_output(response)
-            rospy.loginfo("\nResponding: " + response + "\n")
+            #rospy.loginfo("\nResponding: " + response + "\n")
         asyncio.run(self.clear_message_queue())
 
     async def clear_message_queue(self):
