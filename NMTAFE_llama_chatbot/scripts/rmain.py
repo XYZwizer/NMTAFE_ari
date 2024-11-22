@@ -7,18 +7,15 @@ from actionlib import SimpleActionClient
 import asyncio
 import time
 import rospy
-print("importing lib")
-
-
-print("done importing lib")
-
+import sys
+from remotellama2 import LlamaInterface
 
 # The following demo subscribes to speech-to-text output and triggers TTS
 # based on response
 
 class ASR_llama_chat_bot(object):
-    def __init__(self):
-        self.chatModel = ChatModel()
+    def __init__(self, ip):
+        self.chatModel = LlamaInterface(ip)
 
         self.asr_sub = rospy.Subscriber(
             '/humans/voices/anonymous_speaker/speech',
@@ -44,7 +41,7 @@ class ASR_llama_chat_bot(object):
             return
         self.processing = True
         rospy.loginfo("Understood sentence: " + sentence)
-        self.tts_output(self.chatModel.message(sentence))
+        self.tts_output(self.chatModel.query(sentence))
         asyncio.run(self.clear_message_queue())
 
     async def clear_message_queue(self):
@@ -53,7 +50,6 @@ class ASR_llama_chat_bot(object):
         self.processing = False
 
     def tts_output(self, answer):
-
         self.tts_client.cancel_goal()
         goal = TtsGoal()
         goal.rawtext.lang_id = self.language
@@ -62,6 +58,7 @@ class ASR_llama_chat_bot(object):
 
 
 if __name__ == "__main__":
+    args = rospy.myargv(argv=sys.argv)
     rospy.init_node("asr_llama_chat_bot")
-    node = ASR_llama_chat_bot()
+    node = ASR_llama_chat_bot(args[1])
     rospy.spin()
