@@ -40,8 +40,8 @@ class ari_mover:
 		self.gamePad = Controller()
 	def do(self):
 		# disable this for release
-		if self.gamePad.west == 1:
-			exit(0)
+		#if self.gamePad.west == 1:
+		#	exit(0)   
 		if self.gamePad.north == 1:
 			self.gamePad.left_joy.setCurrentAsDeadZone()
 		#print(f"{self.gamePad.left_joy.direction}", end="                        \r")
