@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import rospy
 import actionlib
 from pal_presentation_msgs.msg import *
