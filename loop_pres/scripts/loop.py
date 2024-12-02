@@ -12,9 +12,8 @@ if __name__ == "__main__":
 
     # check the pal_presentation_msgs/PlayPresentationGoal message
     # definition for the possible goal parameters
-    goal = pal_presentation_msgs.msg.PlayPresentationFromNameActionGoal(goal.presentation_name="joondalup")
-
-    client.send_goal(goal)
-    client.wait_for_result()
-
-    rospy.loginfo("Action returned: %s" % client.get_result())
+    goal = pal_presentation_msgs.msg.PlayPresentationFromNameActionGoal()
+    while True:
+        client.send_goal("joondalup")
+        client.wait_for_result()
+        rospy.loginfo("Action returned: %s" % client.get_result())
