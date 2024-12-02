@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     # check the pal_presentation_msgs/PlayPresentationGoal message
     # definition for the possible goal parameters
-    goal = pal_presentation_msgs.msg.PlayPresentationFromNameActionGoal(presentation_name="joondalup")
+    goal = pal_presentation_msgs.msg.PlayPresentationFromNameActionGoal(goal.presentation_name="joondalup")
 
     client.send_goal(goal)
     client.wait_for_result()
