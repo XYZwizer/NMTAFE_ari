@@ -5,6 +5,7 @@ from pal_presentation_msgs.msg import *
 
 
 if __name__ == "__main__":
+    rospy.init_node('NMTAFE_loop_presentation')
 
     client = actionlib.SimpleActionClient("/pal_play_presentation", pal_presentation_msgs.msg.PlayPresentationAction)
     client.wait_for_server()
