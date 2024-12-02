@@ -7,7 +7,7 @@ from pal_presentation_msgs.msg import *
 if __name__ == "__main__":
     rospy.init_node('NMTAFE_loop_presentation')
 
-    client = actionlib.SimpleActionClient("/pal_play_presentation_from_name", pal_presentation_msgs.msg.PlayPresentationAction)
+    client = actionlib.SimpleActionClient("/pal_play_presentation_from_name", pal_presentation_msgs.msg.PlayPresentationFromNameAction)
     client.wait_for_server()
 
     # check the pal_presentation_msgs/PlayPresentationGoal message
