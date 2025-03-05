@@ -12,7 +12,8 @@ class Puppeteer:
 	def Tick(self):
 		(x, y) = self.gamePad.GetInput("LEFT-X", "axis"), self.gamePad.GetInput("LEFT-Y", "axis")
 		if(x is not None and y is not None):
-			self.movementInterface.SetMovement((x, y), 0.3)
+			print(f"x: {x}, y: {y}")
+			self.movementInterface.SetMovement((x, y), 1)
 
 class GamepadInterface:
 	def __init__(self):
@@ -27,10 +28,13 @@ class GamepadInterface:
 				return self.gamePad.axis(inputName)
 		else:
 			if(self.gamePad is None):
+				print("Gamepad is not connected")
 				if(Gamepad.available()):
+					print("Gamepad is available")
 					self.gamePad = self.gamePadType()
 					self.gamePad.startBackgroundUpdates()
 			elif(not self.gamePad.isConnected()):
+				print("Gamepad is not connected")
 				self.gamePad.disconnect()
 				self.gamePad = None
 			else:
