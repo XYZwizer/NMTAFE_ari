@@ -10,7 +10,7 @@ class Puppeteer:
 		self.movementInterface = RosMovementInterface()
 
 	def Tick(self):
-		(x, y) = self.gamePad.GetInput("LEFT-X", "axis"), self.gamePad.GetInput("LEFT-Y", "axis")
+		(x, y) = self.gamePad.GetInput('LEFT-X', "axis"), self.gamePad.GetInput('LEFT-Y', "axis")
 		if(x is not None and y is not None):
 			print(f"x: {x}, y: {y}")
 			self.movementInterface.SetMovement((x, y), 1)
@@ -31,7 +31,7 @@ class GamepadInterface:
 				print("Gamepad is not connected")
 				if(Gamepad.available(1)):
 					print("Gamepad is available")
-					self.gamePad = self.gamePadType()
+					self.gamePad = self.gamePadType(1)
 					self.gamePad.startBackgroundUpdates()
 			elif(not self.gamePad.isConnected()):
 				print("Gamepad is not connected")
