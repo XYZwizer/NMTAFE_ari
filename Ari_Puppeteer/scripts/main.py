@@ -84,3 +84,4 @@ if __name__ == "__main__":
 	ari = Puppeteer()
 	while not rospy.is_shutdown():
 		ari.Tick()
+		time.sleep(0.1)
