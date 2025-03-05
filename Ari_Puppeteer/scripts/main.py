@@ -29,7 +29,7 @@ class GamepadInterface:
 		else:
 			if(self.gamePad is None):
 				print("Gamepad is not connected")
-				if(Gamepad.available()):
+				if(Gamepad.available(1)):
 					print("Gamepad is available")
 					self.gamePad = self.gamePadType()
 					self.gamePad.startBackgroundUpdates()
