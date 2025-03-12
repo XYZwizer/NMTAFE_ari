@@ -12,6 +12,12 @@ class Puppeteer:
 	def Tick(self):
 		(x, y) = self.gamePad.GetInput('LEFT-X', "axis"), self.gamePad.GetInput('LEFT-Y', "axis")
 		if(x is not None and y is not None):
+			#deadzone check
+			if(abs(x) < 0.1):
+				x = 0
+			if(abs(y) < 0.1):
+				y = 0
+			
 			print(f"x: {x}, y: {y}")
 			self.movementInterface.SetMovement((x, y), 1)
 
