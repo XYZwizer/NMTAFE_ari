@@ -17,7 +17,7 @@ class Puppeteer:
 
 class GamepadInterface:
 	def __init__(self):
-		self.gamePadType = Gamepad.Xbox360
+		self.gamePadType = Gamepad.PS4
 		self.gamePad = None
 
 	def GetInput(self, inputName: str, inputType: str):
