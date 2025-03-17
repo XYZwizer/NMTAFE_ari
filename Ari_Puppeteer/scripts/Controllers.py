@@ -5,42 +5,6 @@ Standard gamepad mappings.
 Pulled in to Gamepad.py directly.
 """
 
-
-class PS3(Gamepad):
-    fullName = 'PlayStation 3 controller'
-
-    def __init__(self, joystickNumber = 0):
-        Gamepad.__init__(self, joystickNumber)
-        self.axisNames = {
-            0: 'LEFT-X',
-            1: 'LEFT-Y',
-            2: 'L2',
-            3: 'RIGHT-X',
-            4: 'RIGHT-Y',
-            5: 'R2'
-        }
-        self.buttonNames = {
-            0:  'CROSS',
-            1:  'CIRCLE',
-            2:  'TRIANGLE',
-            3:  'SQUARE',
-            4:  'L1',
-            5:  'R1',
-            6:  'L2',
-            7:  'R2',
-            8:  'SELECT',
-            9:  'START',
-            10: 'PS',
-            11: 'L3',
-            12: 'R3',
-            13: 'DPAD-UP',
-            14: 'DPAD-DOWN',
-            15: 'DPAD-LEFT',
-            16: 'DPAD-RIGHT'
-        }
-        self._setupReverseMaps()
-
-
 class PS4(Gamepad):
     fullName = 'PlayStation 4 controller'
 
