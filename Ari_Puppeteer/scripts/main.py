@@ -85,8 +85,16 @@ class GamepadInterface:
 			self.controller.left_stick_y.on_change(self.OnLeftStickY)
 			self.controller.L1.on_change(self.OnL1)
 			self.controller.R1.on_change(self.OnR1)
+			self.controller.Mute.on_change(self.OnMic)
+			self.controller.on_error(self.OnError)
+
+			self.controller.activate()
 			return True
-		
+	
+	def	OnError(self, error):
+		print(f"Error: {error}")
+		self.controller.deactivate()
+		self.controller = None #failsafe (dont keep this, ideal to change it when we know possible errors)
 	def OnLeftStickX(self, x):
 		if abs(x) < self.STICK_DEADZONE:
 			x = 0
