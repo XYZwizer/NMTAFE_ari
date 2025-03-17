@@ -1,68 +1,115 @@
 #!/usr/bin/env python3
-import Gamepad
 import time
 from geometry_msgs.msg import Twist
 import rospy
+from dualsense_controller import DualSenseController
 
 class Puppeteer:
 	def __init__(self):
 		self.gamePad = GamepadInterface()
 		self.movementInterface = RosMovementInterface()
 		self.locked = False
+		self.noController = True
 
 	def Tick(self):
-		(x, y) = self.gamePad.GetInput('LEFT-X', "axis"), self.gamePad.GetInput('LEFT-Y', "axis")
-		L1 = self.gamePad.GetInput('L1', "pressed")
-		R1 = self.gamePad.GetInput('R1', "pressed")
-
-		if(L1 and R1): #Killswitch
+		if(self.gamePad.controller is None): #controller disconnected or not connected
 			self.locked = True
+			self.noController = True
+		elif(self.noController): #controller reconnected
+			self.noController = False
+			self.gamePad.SetColor(255, 0, 0) #we are locked out
 
+		if(self.gamePad.L1 and self.gamePad.R1 and not self.locked): #Killswitch
+			self.locked = True
+			self.gamePad.SetColor(255, 0, 0) #red signifies killswitch
 
 		if(not self.locked):
-			if(x is not None and y is not None):
-				#deadzone check
-				if(abs(x) < 0.2):
-					x = 0
-				if(abs(y) < 0.2):
-					y = 0
-				if(y < 0): #invert steering
-					x = -x
+			movement = self.gamePad.LS
+			if(movement[1] < 0): #invert steering
+				movement[0] = -movement[0]
 
-				#print(f"x: {x}, y: {y}")
-				self.movementInterface.SetMovement((x, y), 1)
-			else:
-				self.movementInterface.SetMovement((0, 0), 0)
-				self.locked = True
+			movementMagnitude = (movement[0] ** 2 + movement[1] ** 2) ** 0.5
+			#scale between 0 and 255
+			movementMagnitude = int(movementMagnitude * 255)
+			movementMagnitude = min(255, movementMagnitude)
+			movementMagnitude /= 4 #scale down to 0-64
+
+			#add haptic feedback when in motion (so people dont forget they are piloting a robot)
+			self.gamePad.SetRumble(movementMagnitude, movementMagnitude) 
+
+			print(f"x: {movement[0]}, y: {movement[1]}")
+			self.movementInterface.SetMovement(movement, 1)
 		else:
 			self.movementInterface.SetMovement((0, 0), 0)
+			if(self.gamePad.Mic): #unlock
+				self.locked = False
+				self.gamePad.SetColor(10, 240, 10)
 
 class GamepadInterface:
 	def __init__(self):
-		self.gamePadType = Gamepad.PS4
-		self.gamePad = None
+		self.controller = None
+		self.STICK_DEADZONE = 0.15
+		self.LS = (0, 0) #left stick
+		self.RS = (0, 0) #right stick
+		self.L2 = 0 #left trigger
+		self.R2 = 0 #right trigger
+		self.L1 = False #left bumper
+		self.R1 = False #right bumper
+		self.Mic = False #mic button
 
-	def GetInput(self, inputName: str, inputType: str):
-		if(self.gamePad is not None and self.gamePad.isConnected()):
-			if(inputType == "pressed"):
-				return self.gamePad.isPressed(inputName)
-			elif(inputType == "axis"):
-				return self.gamePad.axis(inputName)
+		if(self.TryConnect()):
+			print("Connected to Dualsense controller")
 		else:
-			if(self.gamePad is None):
-				print("Gamepad is not connected")
-				if(Gamepad.available(1)):
-					print("Gamepad is available")
-					self.gamePad = self.gamePadType(1)
-					self.gamePad.startBackgroundUpdates()
-			elif(not self.gamePad.isConnected()):
-				print("Gamepad is not connected")
-				self.gamePad.disconnect()
-				self.gamePad = None
+			print("Could not connect to Dualsense controller")
+			#try to connect again in 3 seconds
+			self.AttemptConnection()
+
+	def AttemptConnection(self):
+		connected = False
+		while not connected:
+			time.sleep(3)
+			connected = self.TryConnect()
+			if connected:
+				print("Connected to Dualsense controller")
+				self.SetColor(255, 255, 255) #white signifies connection
 			else:
-				print("Gamepad is not connected")
-			return None
+				print(".", end = "")
+
+	def TryConnect(self):
+		devices = DualSenseController.enumerate_devices()
+		if len(devices) < 1:
+			return False
+		else:
+			self.controller = DualSenseController()
+			self.controller.left_stick_x.on_change(self.OnLeftStickX)
+			self.controller.left_stick_y.on_change(self.OnLeftStickY)
+			self.controller.L1.on_change(self.OnL1)
+			self.controller.R1.on_change(self.OnR1)
+			return True
 		
+	def OnLeftStickX(self, x):
+		if abs(x) < self.STICK_DEADZONE:
+			x = 0
+		self.LS = (x, self.LS[1])
+	def OnLeftStickY(self, y):
+		if abs(y) < self.STICK_DEADZONE:
+			y = 0
+		self.LS = (self.LS[0], y)
+	def OnL1(self, pressed):
+		self.L1 = pressed
+	def OnR1(self, pressed):
+		self.R1 = pressed
+	def OnMic(self, pressed):
+		self.Mic = pressed
+	
+	def SetColor(self, r, g, b):
+		if self.controller is not None:
+			self.controller.lightbar.set_color(r, g, b)
+
+	def SetRumble(self, left, right):
+		if self.controller is not None:
+			self.controller.left_rumble.set(left)
+			self.controller.right_rumble.set(right)
 
 
 class RosMovementInterface:
