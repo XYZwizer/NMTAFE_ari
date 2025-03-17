@@ -48,7 +48,7 @@ class Puppeteer:
 class GamepadInterface:
 	def __init__(self):
 		self.controller = None
-		self.STICK_DEADZONE = 0.15
+		self.STICK_DEADZONE = 0.15 #initally manual, if needed can be provided by the api
 		self.LS = (0, 0) #left stick
 		self.RS = (0, 0) #right stick
 		self.L2 = 0 #left trigger
@@ -83,9 +83,9 @@ class GamepadInterface:
 			self.controller = DualSenseController()
 			self.controller.left_stick_x.on_change(self.OnLeftStickX)
 			self.controller.left_stick_y.on_change(self.OnLeftStickY)
-			self.controller.L1.on_change(self.OnL1)
-			self.controller.R1.on_change(self.OnR1)
-			self.controller.Mute.on_change(self.OnMic)
+			self.controller.btn_l1.on_change(self.OnL1)
+			self.controller.btn_r1.on_change(self.OnR1)
+			self.controller.btn_mute.on_change(self.OnMic)
 			self.controller.on_error(self.OnError)
 
 			self.controller.activate()
@@ -96,12 +96,8 @@ class GamepadInterface:
 		self.controller.deactivate()
 		self.controller = None #failsafe (dont keep this, ideal to change it when we know possible errors)
 	def OnLeftStickX(self, x):
-		if abs(x) < self.STICK_DEADZONE:
-			x = 0
 		self.LS = (x, self.LS[1])
 	def OnLeftStickY(self, y):
-		if abs(y) < self.STICK_DEADZONE:
-			y = 0
 		self.LS = (self.LS[0], y)
 	def OnL1(self, pressed):
 		self.L1 = pressed
