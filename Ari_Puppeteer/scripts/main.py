@@ -38,7 +38,7 @@ class Puppeteer:
 			self.gamePad.SetRumble(movementMagnitude, movementMagnitude) 
 
 			print(f"x: {movement[0]}, y: {movement[1]}")
-			self.movementInterface.SetMovement(movement, 1)
+			self.movementInterface.SetMovement(movement, 0.5)
 		else:
 			self.movementInterface.SetMovement((0, 0), 0)
 			if(self.gamePad.Mic): #unlock
