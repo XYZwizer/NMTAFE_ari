@@ -9,33 +9,59 @@ class Puppeteer:
 		self.gamePad = GamepadInterface()
 		self.movementInterface = RosMovementInterface()
 		self.locked = False
-		self.noController = True
+		self.controllerActive = False
 
 	def Tick(self):
-		if(self.gamePad.controller is None): #controller disconnected or not connected
+		if(self.gamePad.controller is None and self.controllerActive): #controller disconnected or not connected
 			self.locked = True
-			self.noController = True
-		elif(self.noController): #controller reconnected
-			self.noController = False
+			self.controllerActive = False
+			print("Controller disconnected")
+
+		elif(not self.controllerActive and self.gamePad.controller): #controller reconnected
 			self.gamePad.SetColor(255, 0, 0) #we are locked out
+			self.locked = True
+			self.controllerActive = True
 
 		if(self.gamePad.L1 and self.gamePad.R1 and not self.locked): #Killswitch
 			self.locked = True
 			self.gamePad.SetColor(255, 0, 0) #red signifies killswitch
 
 		if(not self.locked):
+			self.gamePad.Timeout += 1 #increment timeout
+			if(self.gamePad.Timeout > 5): #timeout after 1 second
+				self.locked = True
+				self.gamePad.SetColor(255, 0, 0) #red signifies killswitch
+				print("Controller timeout")
+				return
 			movement = self.gamePad.LS
 			if(movement[1] < 0): #invert steering
-				movement[0] = -movement[0]
+				movement = (-movement[0], movement[1])
 
 			movementMagnitude = (movement[0] ** 2 + movement[1] ** 2) ** 0.5
-			#scale between 0 and 255
-			movementMagnitude = int(movementMagnitude * 255)
-			movementMagnitude = min(255, movementMagnitude)
-			movementMagnitude /= 4 #scale down to 0-64
+			if(movementMagnitude > 1):
 
-			#add haptic feedback when in motion (so people dont forget they are piloting a robot)
-			self.gamePad.SetRumble(movementMagnitude, movementMagnitude) 
+				#scale between 0 and 0.5
+				movementMagnitude *= 0.5
+				if(movementMagnitude > 0.5):
+					movementMagnitude = 0.5
+				
+				#Apply exponential scaling to make fine control easier and allow for higher speeds
+				range = 128 #1024 for full range
+				movementMagnitude = (range * (movementMagnitude ** 2)) - 1  # Square for exponential curve
+				#print(f"Movement magnitude: {movementMagnitude}")
+				leftSide = movementMagnitude
+				rightSide = movementMagnitude
+				#Scale reduction based on left stick X value
+				turn_factor = abs(self.gamePad.LS[0])  # How much we're turning
+				if self.gamePad.LS[0] > 0:  # Turning right
+					leftSide *= (1.03 - turn_factor)  # Reduce left side proportionally
+				else:  # Turning left
+					rightSide *= (1 - turn_factor)  # Reduce right side proportionally
+
+				#add haptic feedback when in motion (so people dont forget they are piloting a robot)
+				self.gamePad.SetRumble(leftSide, rightSide)
+			else:
+				self.gamePad.SetRumble(0, 0)
 
 			print(f"Dualsense x: {movement[0]}, y: {movement[1]}")
 			self.movementInterface.SetMovement(movement, 0.5)
@@ -48,7 +74,6 @@ class Puppeteer:
 class GamepadInterface:
 	def __init__(self):
 		self.controller = None
-		self.STICK_DEADZONE = 0.15 #initally manual, if needed can be provided by the api
 		self.LS = (0, 0) #left stick
 		self.RS = (0, 0) #right stick
 		self.L2 = 0 #left trigger
@@ -56,6 +81,7 @@ class GamepadInterface:
 		self.L1 = False #left bumper
 		self.R1 = False #right bumper
 		self.Mic = False #mic button
+		self.Timeout = 0 #timeout for connection attempts
 
 		if(self.TryConnect()):
 			print("Connected to Dualsense controller")
@@ -80,7 +106,7 @@ class GamepadInterface:
 		if len(devices) < 1:
 			return False
 		else:
-			self.controller = DualSenseController()
+			self.controller = DualSenseController(left_joystick_deadzone=0.08, right_joystick_deadzone=0.08)
 			self.controller.left_stick_x.on_change(self.OnLeftStickX)
 			self.controller.left_stick_y.on_change(self.OnLeftStickY)
 			self.controller.btn_l1.on_change(self.OnL1)
@@ -92,9 +118,10 @@ class GamepadInterface:
 			return True
 	
 	def	OnError(self, error):
-		print(f"Error: {error}")
-		self.controller.deactivate()
+		tController = self.controller
 		self.controller = None #failsafe (dont keep this, ideal to change it when we know possible errors)
+		print(f"Error: {error}")
+		tController.deactivate()
 	def OnLeftStickX(self, x):
 		self.LS = (x, self.LS[1])
 	def OnLeftStickY(self, y):
@@ -105,6 +132,9 @@ class GamepadInterface:
 		self.R1 = pressed
 	def OnMic(self, pressed):
 		self.Mic = pressed
+	def OnGyro(self, gyro):
+		#print(f"Gyro: {gyro}")
+		self.Timeout = 0 #reset	 timeout
 	
 	def SetColor(self, r, g, b):
 		if self.controller is not None:
