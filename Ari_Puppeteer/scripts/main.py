@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import time
-
 from dualsense_controller import DualSenseController
 from geometry_msgs.msg import Twist
 import rospy
@@ -38,7 +37,7 @@ class Puppeteer:
 			#add haptic feedback when in motion (so people dont forget they are piloting a robot)
 			self.gamePad.SetRumble(movementMagnitude, movementMagnitude) 
 
-			print(f"x: {movement[0]}, y: {movement[1]}")
+			print(f"Dualsense x: {movement[0]}, y: {movement[1]}")
 			self.movementInterface.SetMovement(movement, 0.5)
 		else:
 			self.movementInterface.SetMovement((0, 0), 0)
