@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import time
+
+from dualsense_controller import DualSenseController
 from geometry_msgs.msg import Twist
 import rospy
-from dualsense_controller import DualSenseController
 
 class Puppeteer:
 	def __init__(self):
