@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.10
 import time
 from dualsense_controller import DualSenseController
 from geometry_msgs.msg import Twist
@@ -68,6 +68,7 @@ class Puppeteer:
 			self.movementInterface.SetMovement(movement, 0.5)
 		else:
 			self.movementInterface.SetMovement((0, 0), 0)
+			#print(self.gamePad.Mic)
 			if(self.gamePad.Mic): #unlock
 				self.locked = False
 				self.gamePad.SetColor(10, 240, 10)
@@ -114,6 +115,8 @@ class GamepadInterface:
 			self.controller.btn_l1.on_change(self.OnL1)
 			self.controller.btn_r1.on_change(self.OnR1)
 			self.controller.btn_mute.on_change(self.OnMic)
+			#self.controller.btn_ps.on_change(self.OnMic) #backup
+			self.controller.gyroscope.on_change(self.OnGyro)
 			self.controller.on_error(self.OnError)
 
 			self.controller.activate()
@@ -127,6 +130,7 @@ class GamepadInterface:
 	def OnLeftStickX(self, x):
 		self.LS = (x, self.LS[1])
 	def OnLeftStickY(self, y):
+		print(y)
 		self.LS = (self.LS[0], y)
 	def OnL1(self, pressed):
 		self.L1 = pressed
@@ -134,8 +138,10 @@ class GamepadInterface:
 		self.R1 = pressed
 	def OnMic(self, pressed):
 		self.Mic = pressed
+		print(f"Mic: {pressed}")
+
 	def OnGyro(self, gyro):
-		#print(f"Gyro: {gyro}")
+		print(f"Gyro: {gyro}")
 		self.Timeout = 0 #reset	 timeout
 	
 	def SetColor(self, r, g, b):
