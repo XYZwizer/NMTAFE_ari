@@ -3,6 +3,7 @@ import time
 from dualsense_controller import DualSenseController
 from geometry_msgs.msg import Twist
 import rospy
+import os
 
 class Puppeteer:
 	def __init__(self):
@@ -99,6 +100,7 @@ class GamepadInterface:
 				print("Connected to Dualsense controller")
 				self.SetColor(255, 255, 255) #white signifies connection
 			else:
+				os.system("./pair_to_dedicated_dualsense.sh")
 				print(".", end = "")
 
 	def TryConnect(self):
