@@ -1,0 +1,3 @@
+def do_emot_from_emoji(emoji: str):
+    #all go threw this
+    ...
