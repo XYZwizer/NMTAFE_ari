@@ -1,157 +1,67 @@
-#!/usr/bin/env python3.10
+#!/usr/bin/env python3
+import Gamepad
 import time
-from dualsense_controller import DualSenseController
 from geometry_msgs.msg import Twist
 import rospy
-import os
 
 class Puppeteer:
 	def __init__(self):
 		self.gamePad = GamepadInterface()
 		self.movementInterface = RosMovementInterface()
 		self.locked = False
-		self.controllerActive = False
 
 	def Tick(self):
-		if(self.gamePad.controller is None and self.controllerActive): #controller disconnected or not connected
-			self.locked = True
-			self.controllerActive = False
-			print("Controller disconnected")
+		(x, y) = self.gamePad.GetInput('LEFT-X', "axis"), self.gamePad.GetInput('LEFT-Y', "axis")
+		L1 = self.gamePad.GetInput('L1', "pressed")
+		R1 = self.gamePad.GetInput('R1', "pressed")
 
-		elif(not self.controllerActive and self.gamePad.controller): #controller reconnected
-			self.gamePad.SetColor(255, 0, 0) #we are locked out
+		if(L1 and R1): #Killswitch
 			self.locked = True
-			self.controllerActive = True
 
-		if(self.gamePad.L1 and self.gamePad.R1 and not self.locked): #Killswitch
-			self.locked = True
-			self.gamePad.SetColor(255, 0, 0) #red signifies killswitch
 
 		if(not self.locked):
-			self.gamePad.Timeout += 1 #increment timeout
-			if(self.gamePad.Timeout > 5): #timeout after 1 second
-				self.locked = True
-				self.gamePad.SetColor(255, 0, 0) #red signifies killswitch
-				print("Controller timeout")
-				return
-			movement = self.gamePad.LS
-			if(movement[1] < 0): #invert steering
-				movement = (-movement[0], movement[1])
-
-			movementMagnitude = (movement[0] ** 2 + movement[1] ** 2) ** 0.5
-			if(movementMagnitude > 1):
-
-				#scale between 0 and 0.5
-				movementMagnitude *= 0.5
-				if(movementMagnitude > 0.5):
-					movementMagnitude = 0.5
-				
-				#Apply exponential scaling to make fine control easier and allow for higher speeds
-				range = 128 #1024 for full range
-				movementMagnitude = (range * (movementMagnitude ** 2)) - 1  # Square for exponential curve
-				#print(f"Movement magnitude: {movementMagnitude}")
-				leftSide = movementMagnitude
-				rightSide = movementMagnitude
-				#Scale reduction based on left stick X value
-				turn_factor = abs(self.gamePad.LS[0])  # How much we're turning
-				if self.gamePad.LS[0] > 0:  # Turning right
-					leftSide *= (1.03 - turn_factor)  # Reduce left side proportionally
-				else:  # Turning left
-					rightSide *= (1 - turn_factor)  # Reduce right side proportionally
-
-				#add haptic feedback when in motion (so people dont forget they are piloting a robot)
-				self.gamePad.SetRumble(leftSide, rightSide)
+			if(x is not None and y is not None):
+				#deadzone check
+				if(abs(x) < 0.2):
+					x = 0
+				if(abs(y) < 0.2):
+					y = 0
+				if(y < 0): #invert steering
+					x = -x
+				#print(f"x: {x}, y: {y}")
+				self.movementInterface.SetMovement((x, y), 1)
 			else:
-				self.gamePad.SetRumble(0, 0)
-
-			print(f"Dualsense x: {movement[0]}, y: {movement[1]}")
-			self.movementInterface.SetMovement(movement, 0.5)
+				self.movementInterface.SetMovement((0, 0), 0)
+				self.locked = True
 		else:
 			self.movementInterface.SetMovement((0, 0), 0)
-			#print(self.gamePad.Mic)
-			if(self.gamePad.Mic): #unlock
-				self.locked = False
-				self.gamePad.SetColor(10, 240, 10)
 
 class GamepadInterface:
 	def __init__(self):
-		self.controller = None
-		self.LS = (0, 0) #left stick
-		self.RS = (0, 0) #right stick
-		self.L2 = 0 #left trigger
-		self.R2 = 0 #right trigger
-		self.L1 = False #left bumper
-		self.R1 = False #right bumper
-		self.Mic = False #mic button
-		self.Timeout = 0 #timeout for connection attempts
+		self.gamePadType = Gamepad.PS4
+		self.gamePad = None
 
-		if(self.TryConnect()):
-			print("Connected to Dualsense controller")
+	def GetInput(self, inputName: str, inputType: str):
+		if(self.gamePad is not None and self.gamePad.isConnected()):
+			if(inputType == "pressed"):
+				return self.gamePad.isPressed(inputName)
+			elif(inputType == "axis"):
+				return self.gamePad.axis(inputName)
 		else:
-			print("Could not connect to Dualsense controller")
-			#try to connect again in 3 seconds
-			self.AttemptConnection()
-
-	def AttemptConnection(self):
-		connected = False
-		while not connected:
-			time.sleep(3)
-			connected = self.TryConnect()
-			if connected:
-				print("Connected to Dualsense controller")
-				self.SetColor(255, 255, 255) #white signifies connection
+			if(self.gamePad is None):
+				print("Gamepad is not connected")
+				if(Gamepad.available(1)):
+					print("Gamepad is available")
+					self.gamePad = self.gamePadType(1)
+					self.gamePad.startBackgroundUpdates()
+			elif(not self.gamePad.isConnected()):
+				print("Gamepad is not connected")
+				self.gamePad.disconnect()
+				self.gamePad = None
 			else:
-				os.system("./pair_to_dedicated_dualsense.sh")
-				print(".", end = "")
-
-	def TryConnect(self):
-		devices = DualSenseController.enumerate_devices()
-		if len(devices) < 1:
-			return False
-		else:
-			self.controller = DualSenseController(left_joystick_deadzone=0.08, right_joystick_deadzone=0.08)
-			self.controller.left_stick_x.on_change(self.OnLeftStickX)
-			self.controller.left_stick_y.on_change(self.OnLeftStickY)
-			self.controller.btn_l1.on_change(self.OnL1)
-			self.controller.btn_r1.on_change(self.OnR1)
-			self.controller.btn_mute.on_change(self.OnMic)
-			#self.controller.btn_ps.on_change(self.OnMic) #backup
-			self.controller.gyroscope.on_change(self.OnGyro)
-			self.controller.on_error(self.OnError)
-
-			self.controller.activate()
-			return True
-	
-	def	OnError(self, error):
-		tController = self.controller
-		self.controller = None #failsafe (dont keep this, ideal to change it when we know possible errors)
-		print(f"Error: {error}")
-		tController.deactivate()
-	def OnLeftStickX(self, x):
-		self.LS = (x, self.LS[1])
-	def OnLeftStickY(self, y):
-		print(y)
-		self.LS = (self.LS[0], y)
-	def OnL1(self, pressed):
-		self.L1 = pressed
-	def OnR1(self, pressed):
-		self.R1 = pressed
-	def OnMic(self, pressed):
-		self.Mic = pressed
-		print(f"Mic: {pressed}")
-
-	def OnGyro(self, gyro):
-		print(f"Gyro: {gyro}")
-		self.Timeout = 0 #reset	 timeout
-	
-	def SetColor(self, r, g, b):
-		if self.controller is not None:
-			self.controller.lightbar.set_color(r, g, b)
-
-	def SetRumble(self, left, right):
-		if self.controller is not None:
-			self.controller.left_rumble.set(left)
-			self.controller.right_rumble.set(right)
+				print("Gamepad is not connected")
+			return None
+		
 
 
 class RosMovementInterface:
