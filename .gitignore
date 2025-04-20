@@ -5,6 +5,8 @@
 */devel/*
 */gtest/*
 */test_results/*
+nmtafe_ws/build/*
+nmtafe_ws/.catkin_workspace
 
 */CMakeCache.txt
 */CTestConfiguration.ini
