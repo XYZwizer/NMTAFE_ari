@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from std_msgs.msg import String
 from pal_interaction_msgs.msg import TtsAction, TtsGoal
 from hri_msgs.msg import LiveSpeech
@@ -6,12 +7,13 @@ from hri_msgs.msg import LiveSpeech
 from emoji_to_emote import do_emot_from_emoji
 from am_looked_at import BodyOrientationListener
 
-from enum import Enum
+
 
 # class syntax
-class game_state(Enum):
-    awating_player = 0
-    engaged_with_player = 1
+class game_state:
+	awating_player = 0
+	engaged_with_player = 1
+	playing = 2
 
 class NMTAFE_gandalf_game_node:
 	def __init__(self):
@@ -21,11 +23,14 @@ class NMTAFE_gandalf_game_node:
 			'/humans/voices/anonymous_speaker/speech',
 			LiveSpeech,
 			self.on_speech)
-        self.game_state = game_state.awating_player
-
+		self.game_state = game_state.awating_player
+	
+	def set_game_state(self,new_state):
+		print(self.game_state,new_state)
 
 	def on_speech(self,text):
-        
+		if "yes" in text:
+			self.set_game_state(game_state.playing)
 
 	def tts_output(self, answer):
 		self.tts_client.cancel_goal()
