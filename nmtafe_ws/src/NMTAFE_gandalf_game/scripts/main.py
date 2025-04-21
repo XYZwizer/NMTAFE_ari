@@ -42,4 +42,5 @@ class NMTAFE_gandalf_game_node:
 if __name__ == '__main__':
 	# execute only if run as the entry point into the program
 	node = NMTAFE_gandalf_game_node()
+	foobar = BodyOrientationListener()
 	rospy.spin()

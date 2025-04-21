@@ -5,7 +5,7 @@ from tf import transformations as t
 
 import numpy as np
 
-import pyhri
+import pyhri as hri
 from hri_msgs.msg import IdsList
 
 class BodyOrientationListener:
