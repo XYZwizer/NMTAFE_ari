@@ -2,12 +2,12 @@
 from std_msgs.msg import String
 from pal_interaction_msgs.msg import TtsAction, TtsGoal
 from hri_msgs.msg import LiveSpeech
-from hri_msgs.msg import LiveSpeech
+from actionlib import SimpleActionClient
 
 from emoji_to_emote import do_emot_from_emoji
 from am_looked_at import BodyOrientationListener
 
-
+import rospy
 
 # class syntax
 class game_state:
