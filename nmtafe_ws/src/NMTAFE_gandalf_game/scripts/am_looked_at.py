@@ -103,7 +103,7 @@ class BodyOrientationListener:
 				# with 2*threshold amplitude or not. When it does,
 				# the body id is appended to the list of the bodies
 				# oriented toward the robot
-				if np.arccos(b2r_translation_x/b2r_xy_norm) < \(self.threshold/180*np.pi) and b2r_translation_x > 0:
+				if np.arccos(b2r_translation_x/b2r_xy_norm) < (self.threshold/180*np.pi) and b2r_translation_x > 0:
 					bodies_facing_robot.append(body[0])
 				#instruction printing the list of bodies oriented
 				#toward the robot
