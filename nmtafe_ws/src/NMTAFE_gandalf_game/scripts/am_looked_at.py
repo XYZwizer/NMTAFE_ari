@@ -9,7 +9,7 @@ import pyhri as hri
 from hri_msgs.msg import IdsList
 
 class BodyOrientationListener:
-	def __init__(self,base_frame = "camera_link",threshold=30):
+	def __init__(self,base_frame = "/head_front_camera",threshold=30):
 		""" Constructor, defines some of the class
 		objects that will be used later in the code """
 
@@ -104,10 +104,10 @@ class BodyOrientationListener:
 				# the body id is appended to the list of the bodies
 				# oriented toward the robot
 				if np.arccos(b2r_translation_x/b2r_xy_norm) < (self.threshold/180*np.pi) and b2r_translation_x > 0:
-					bodies_facing_robot.append(body[0])
+					self.bodies_facing_robot.append(body[0])
 				#instruction printing the list of bodies oriented
 				#toward the robot
-				print("Bodies facing the robot: ", bodies_facing_robot)
+				print("Bodies facing the robot: ", self.bodies_facing_robot)
 		# sleep instruction. In this case, the node will sleep
 		# for 1 second, considering that the rate is 1
 		self.rate.sleep()
