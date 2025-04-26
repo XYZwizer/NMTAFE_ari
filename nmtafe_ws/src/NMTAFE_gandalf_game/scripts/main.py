@@ -23,6 +23,9 @@ class NMTAFE_gandalf_game_node:
 			'/humans/voices/anonymous_speaker/speech',
 			LiveSpeech,
 			self.on_speech)
+	
+	rospy.Subscriber("/NMTAFE_gandalf_game/password_attempt", String, callback)
+	
 		self.game_state = game_state.awating_player
 	
 	def set_game_state(self,new_state):
@@ -31,6 +34,9 @@ class NMTAFE_gandalf_game_node:
 	def on_speech(self,text):
 		if "yes" in text:
 			self.set_game_state(game_state.playing)
+
+	def on_password_attempt(self,password):
+		print("doing g game stuff:", password)
 
 	def tts_output(self, answer):
 		self.tts_client.cancel_goal()
