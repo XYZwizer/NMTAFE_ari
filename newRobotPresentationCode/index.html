@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Image Slideshow</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #000;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        img {
+            max-width: 100vw;
+            max-height: 100vh;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: auto;
+        }
+        #startBtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            padding: 1rem 2rem;
+            z-index: 10;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        #startBtn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <button id="startBtn">Start Slideshow</button>
+    <img id="slideshow" src="" alt="Slideshow" style="display:none;" />
+    <script>
+        // tts endpoint = http://ari-20c/action/tts
+        //tts data structure
+        // data = {
+        //   "rawtext": {
+        //     "text": "Hey, Juana, how are you?",
+        //     "lang_id": "en_GB"
+        //   }
+        // }
+
+        // motion endpoint = http://ari-20c/action/motion_manager
+        // motion data structure
+        // {"filename": "shake_left"}
+
+        //volume endpoint = http://ari-20c/parameter/volume
+
+        async function setvolume(v) {
+            const response = await fetch('http://ari-20c/parameter/volume', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    volume: v
+                })
+            });
+            console.log('Volume response:', await response.json());
+        }
+        let slideData = [];
+        let idx = 0;
+        let interval = null;
+        let slideshowActive = false;
+        const img = document.getElementById('slideshow');
+        const btn = document.getElementById('startBtn');
+        
+        // Function to load the slide data from the JSON file
+        async function loadSlideData() {
+            try {
+                const response = await fetch('slides.json');
+                const data = await response.json();
+                slideData = data.slides;
+                console.log('Slides loaded:', slideData.length);
+            } catch (error) {
+                console.error('Error loading slides:', error);
+            }
+        }        // Function to call the TTS endpoint
+        async function sayText(text) {
+            if (!text) return;
+            
+            try {
+                const response = await fetch('http://ari-20c/action/tts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        rawtext: {
+                            text: text,
+                            lang_id: "en_GB"
+                        }
+                    })
+                });
+                
+                console.log('TTS response:', await response.json());
+            } catch (error) {
+                console.error('Error calling TTS:', error);
+            }
+        }
+        
+        // Function to call the motion endpoint
+        async function doMotion(motion) {
+            if (!motion) return;
+            
+            try {
+                const response = await fetch('http://ari-20c/action/motion_manager', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        filename: motion
+                    })
+                });
+                
+                console.log('Motion response:', await response.json());
+            } catch (error) {
+                console.error('Error calling motion:', error);
+            }
+        }
+
+        function showImage(i) {
+            if (i < 0 || i >= slideData.length) return;
+            
+            const slide = slideData[i];
+            img.src = slide.image + '.png';
+            
+            // Call TTS if there's text to say
+            if (slide.say) {
+                sayText(slide.say);
+            }
+            
+            // Execute motion if specified
+            if (slide.motion) {
+                doMotion(slide.motion);
+            }
+        }
+
+        function stopSlideshow() {
+            if (interval) {
+                clearInterval(interval);
+                interval = null;
+            }
+            
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            
+            img.style.display = 'none';
+            btn.style.display = 'block';
+            slideshowActive = false;
+            idx = 0; // Reset to the first slide
+        }
+
+        function startSlideshow() {
+            // Load slide data first, then start the slideshow
+            loadSlideData().then(() => {
+                if (slideData.length === 0) {
+                    console.error('No slides loaded');
+                    return;
+                }
+                
+                btn.style.display = 'none';
+                img.style.display = 'block';
+                document.documentElement.requestFullscreen();
+                slideshowActive = true;
+                showImage(idx);
+                
+                interval = setInterval(() => {
+                    idx = (idx + 1) % slideData.length;
+                    showImage(idx);
+                }, slideData[idx].duration * 1000 || 3000);
+            });
+        }
+        
+        btn.addEventListener('click', startSlideshow);
+        
+        // Handle clicks anywhere on the document to exit slideshow
+        document.addEventListener('click', function(event) {
+            // Only respond to clicks if slideshow is active and if the click wasn't on the start button
+            if (slideshowActive && event.target !== btn) {
+                stopSlideshow();
+                event.preventDefault();
+            }
+        });
+        
+        // Pre-load the slide data when the page loads
+        window.addEventListener('DOMContentLoaded', loadSlideData);
+        //setvolume(0.5); // Set initial volume to 50%
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{
+    "slides": [
+        {
+            "image": "2a04ab4e83e54d200141237c8908f26e-0",
+            "say": "Welcome to the presentation!",
+            "motion": "",
+            "duration": 3
+        },
+        {
+            "image": "2a04ab4e83e54d200141237c8908f26e-1",
+            "say": "",
+            "motion": "",
+            "duration": 3
+        },
+        {
+            "image": "2a04ab4e83e54d200141237c8908f26e-2",
+            "say": "",
+            "motion": "",
+            "duration": 3
+        },
+        {
+            "image": "2a04ab4e83e54d200141237c8908f26e-3",
+            "say": "This is the hardware slide",
+            "motion": "",
+            "duration": 3
+        },
+        {
+            "image": "2a04ab4e83e54d200141237c8908f26e-4",
+            "say": "",
+            "motion": "",
+            "duration": 3
+        },
+        {
+            "image": "2a04ab4e83e54d200141237c8908f26e-5",
+            "say": "this is the costs slide",
+            "motion": "",
+            "duration": 3
+        },
+        {
+            "image": "2a04ab4e83e54d200141237c8908f26e-6",
+            "say": "",
+            "motion": "",
+            "duration": 3
+        }
+    ]
+}
