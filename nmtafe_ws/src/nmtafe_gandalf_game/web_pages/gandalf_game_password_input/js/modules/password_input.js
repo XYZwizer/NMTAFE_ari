@@ -6,37 +6,41 @@ $(document).ready(function() {
     $('#main-div').fadeIn(400);
 });
 
-class NameManager {
+class ggPasswordInputManager {
 	constructor() {
 		this.ros = new RRLIB.Ros({
 			host: 'http://' + window.location.hostname
 		});
 		this.web_input_pub = new RRLIB.Topic({
 			ros: this.ros,
-			name: 'user_input'
+			name: '/NMTAFE_gandalf_game/password_attempt'
 		});
 	}
-	setCfg() {
+
+	try_password(password_text) {
+		this.web_input_pub.publish({data:password_text})
+	}
+	/*setCfg() {
 		let param = new RRLIB.Param({
 			ros: this.ros,
 			name: 'preferences_setup'
 		});
 		param.set({
-			robot_name_preferences: $("#robot-name-input").val()
+			robot_name_preferences: $("#gg-password-input").val()
 		}, () => {
 			this.web_input_pub.publish({
 				action: 'INPUT_ACCEPT'
 			});
 		});
-	}
+	}*/
 }
 
-let name_mgr = new NameManager();
+let pass_input_mgr = new ggPasswordInputManager();
 $(document).ready(function() {
 	$("#arrow-right-btn").on('touchend', () => {
 		if (!$("#arrow-right-btn").hasClass("non-active-btn")) {
 			$("#arrow-right-btn").removeClass("go-btn").addClass("non-active-btn");
-			name_mgr.setCfg();
+			pass_input_mgr.try_password();			
 		}
 	});
 });
@@ -103,7 +107,7 @@ function animatedCloseKeyboard() {
 	/* Close keyboard */
 	$("#robot-name-keyboard").addClass("fadeOutDown d-none").removeClass("animatedFadeInUp fadeInUp");
 	/* Reduce inputs */
-	$("#robot-name-input").addClass("keyboard-input-closed").removeClass("keyboard-input-opened input-large");
+	$("#gg-password-input").addClass("keyboard-input-closed").removeClass("keyboard-input-opened input-large");
 	/* Edit margins */
 	$("#robot-name-title").removeClass("mt-10").addClass("mt-15");
 	$("#input-box").addClass("mt-10");
