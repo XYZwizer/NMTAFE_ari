@@ -14,10 +14,10 @@ class Puppeteer:
 		(x, y) = self.gamePad.GetInput('LEFT-X', "axis"), self.gamePad.GetInput('LEFT-Y', "axis")
 		L1 = self.gamePad.GetInput('L1', "pressed")
 		R1 = self.gamePad.GetInput('R1', "pressed")
+		PS = self.gamePad.GetInput('PS', "pressed")
 
 		if(L1 and R1): #Killswitch
 			self.locked = True
-
 
 		if(not self.locked):
 			if(x is not None and y is not None):
@@ -28,13 +28,17 @@ class Puppeteer:
 					y = 0
 				if(y < 0): #invert steering
 					x = -x
-				#print(f"x: {x}, y: {y}")
+				print(f"x: {x}, y: {y}")
 				self.movementInterface.SetMovement((x, y), 1)
 			else:
 				self.movementInterface.SetMovement((0, 0), 0)
 				self.locked = True
 		else:
 			self.movementInterface.SetMovement((0, 0), 0)
+			print("Locked")
+			if(PS is not None and PS):
+				self.locked = False
+				print("Unlocked")
 
 class GamepadInterface:
 	def __init__(self):
