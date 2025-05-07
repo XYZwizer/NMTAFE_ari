@@ -19,17 +19,22 @@ class Puppeteer:
 		if(L1 and R1): #Killswitch
 			self.locked = True
 
+
+		# -Y is forward, +Y is backward, -X is right, +X is left
+
 		if(not self.locked):
 			if(x is not None and y is not None):
+				speed = 1.0
 				#deadzone check
 				if(abs(x) < 0.2):
 					x = 0
 				if(abs(y) < 0.2):
 					y = 0
-				if(y < 0): #invert steering
+				if(y > 0): #invert steering if going backwards
 					x = -x
+					speed = 0.7
 				print(f"x: {x}, y: {y}")
-				self.movementInterface.SetMovement((x, y), 1)
+				self.movementInterface.SetMovement((x, y), speed)
 			else:
 				self.movementInterface.SetMovement((0, 0), 0)
 				self.locked = True
@@ -99,7 +104,9 @@ class RosMovementInterface:
 	
 	def SetMovement(self, movement, speed):
 		if self.hasPublisher:
-			self.publisher.publish(self._toTwist(movement, speed))
+			twist = self._toTwist(movement, speed)
+			print(f"Publishing: {twist}")
+			self.publisher.publish(twist)
 		else:
 			print("No publisher available")
 	
