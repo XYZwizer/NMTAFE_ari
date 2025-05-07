@@ -30,9 +30,9 @@ class Puppeteer:
 					x = 0
 				if(abs(y) < 0.2):
 					y = 0
-				if(y > 0): #invert steering if going backwards
+				if(y < 0): #invert steering if going backwards
 					x = -x
-					speed = 0.7
+					speed = 0.4
 				print(f"x: {x}, y: {y}")
 				self.movementInterface.SetMovement((x, y), speed)
 			else:
