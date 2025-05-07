@@ -24,7 +24,7 @@ class Puppeteer:
 
 		if(not self.locked):
 			if(x is not None and y is not None):
-				speed = 1.0
+				speed = 0.7
 				#deadzone check
 				if(abs(x) < 0.2):
 					x = 0
