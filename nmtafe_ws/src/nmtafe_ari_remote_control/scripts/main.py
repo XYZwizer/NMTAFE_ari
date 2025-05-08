@@ -9,6 +9,7 @@ class Puppeteer:
 		self.gamePad = GamepadInterface()
 		self.movementInterface = RosMovementInterface()
 		self.locked = False
+		self.smoothedY = 0.0
 
 	def Tick(self):
 		(x, y) = self.gamePad.GetInput('LEFT-X', "axis"), self.gamePad.GetInput('LEFT-Y', "axis")
@@ -32,8 +33,14 @@ class Puppeteer:
 					y = 0
 				if(y < 0): #invert steering if going backwards
 					x = -x
-					speed = 0.4
+					speed = 1.0
 				print(f"x: {x}, y: {y}")
+
+				#smooth the y axis input
+				self.smoothedY = self.lerp(self.smoothedY, y, 0.01)
+				if(y == 0):
+					self.smoothedY = 0.0
+
 				self.movementInterface.SetMovement((x, y), speed)
 			else:
 				self.movementInterface.SetMovement((0, 0), 0)
@@ -44,6 +51,9 @@ class Puppeteer:
 			if(PS is not None and PS):
 				self.locked = False
 				print("Unlocked")
+
+	def lerp(self, start, end, t):
+		return start + (end - start) * t
 
 class GamepadInterface:
 	def __init__(self):
