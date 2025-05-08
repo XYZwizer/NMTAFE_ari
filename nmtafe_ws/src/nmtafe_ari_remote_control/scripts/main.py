@@ -31,13 +31,13 @@ class Puppeteer:
 					x = 0
 				if(abs(y) < 0.2):
 					y = 0
-				if(y < 0): #invert steering if going backwards
+				if(y > 0): #invert steering if going backwards
 					x = -x
 					speed = 1.0
 				print(f"x: {x}, y: {y}")
 
 				#smooth the y axis input
-				self.smoothedY = self.lerp(self.smoothedY, y, 0.01)
+				self.smoothedY = self.lerp(self.smoothedY, y, 0.005)
 				if(y == 0):
 					self.smoothedY = 0.0
 
