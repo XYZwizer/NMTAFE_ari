@@ -1,1 +1,1 @@
-this file is a stub for now
+sudo cp -r ./nmtafe_ws/src/nmtafe_ari_remote_control/systemd_services /etc/systemd/system
