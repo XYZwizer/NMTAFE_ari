@@ -1,0 +1,10 @@
+[Unit]
+Description=nmtafe remote_controll be bluetooth
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/bash /home/pal/Documents/Robot_Repo/nmtafe_ws/src/nmtafe_ari_remote_control/scripts/start.bash
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
