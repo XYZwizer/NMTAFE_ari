@@ -37,11 +37,11 @@ class Puppeteer:
 				print(f"x: {x}, y: {y}")
 
 				#smooth the y axis input
-				self.smoothedY = self.lerp(self.smoothedY, y, 0.005)
+				self.smoothedY = self.lerp(self.smoothedY, y, 0.04)
 				if(y == 0):
 					self.smoothedY = 0.0
 
-				self.movementInterface.SetMovement((x, y), speed)
+				self.movementInterface.SetMovement((x, self.smoothedY), speed)
 			else:
 				self.movementInterface.SetMovement((0, 0), 0)
 				self.locked = True
