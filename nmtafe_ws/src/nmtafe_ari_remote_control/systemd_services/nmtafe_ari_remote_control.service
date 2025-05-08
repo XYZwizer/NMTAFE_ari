@@ -3,7 +3,7 @@ Description=nmtafe remote_controll be bluetooth
 After=multi-user.target
 
 [Service]
-ExecStart=/usr/bin/bash /home/pal/Documents/Robot_Repo/nmtafe_ws/src/nmtafe_ari_remote_control/scripts/start.bash
+ExecStart=/usr/bin/bash /home/pal/home/NMTAFE_ari/nmtafe_ws/src/nmtafe_ari_remote_control/scripts/start.bash
 Type=simple
 
 [Install]
