@@ -13,7 +13,7 @@ import rospy
 
 # class syntax
 class game_state:
-	awating_player = 0
+	wating_player = 0
 	engaged_with_player = 1
 	playing = 2
 
@@ -27,7 +27,8 @@ class NMTAFE_gandalf_game_node:
 			self.on_speech)
 		
 		self.pas_sub = rospy.Subscriber("/NMTAFE_gandalf_game/password_attempt", String, self.on_password_attempt)
-		
+		self.force_game_state_sub = rospy.Subscriber("/NMTAFE_gandalf_game/password_attempt",std_msgs.msg.bool, self.on_force_game_state)
+
 		self.web_pub = rospy.Publisher('/web/go_to',  WebGoTo, queue_size=10) 
 		
 		self.game_state = game_state.awating_player
@@ -37,8 +38,10 @@ class NMTAFE_gandalf_game_node:
 		self.web_pub.publish(new_page)
 
 	def set_game_state(self,new_state):
+		if new_state == game_state.playing:
+			self.set_page("gandalf_game_password_input")
+			self.output_tts("ok let play [insert game explanation hear]")
 		print(self.game_state,new_state)
-		self.set_page("gandalf_game_password_input")
 
 	def on_speech(self,text):
 		if not text.final: return
@@ -48,6 +51,13 @@ class NMTAFE_gandalf_game_node:
 
 	def on_password_attempt(self,password):
 		print("doing g game stuff:", password)
+
+    def on_force_game_state(self, game_on):
+        if game_on:
+            self.set_game_state(game_state.playing)
+        else:
+            self.set_game_state(game_state.wating_player) 
+
 
 	def tts_output(self, answer):
 		self.tts_client.cancel_goal()
