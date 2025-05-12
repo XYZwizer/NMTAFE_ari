@@ -78,7 +78,7 @@ class GamepadInterface:
 				self.gamePad.disconnect()
 				self.gamePad = None
 			else:
-				#print("Gamepad is not connected")
+				...#print("Gamepad is not connected")
 			return None
 		
 
