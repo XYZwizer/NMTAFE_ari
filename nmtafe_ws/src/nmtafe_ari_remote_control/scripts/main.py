@@ -34,7 +34,7 @@ class Puppeteer:
 				if(y > 0): #invert steering if going backwards
 					x = -x
 					speed = 1.0
-				print(f"x: {x}, y: {y}")
+				#print(f"x: {x}, y: {y}")
 
 				#smooth the y axis input
 				self.smoothedY = self.lerp(self.smoothedY, y, 0.04)
@@ -47,10 +47,10 @@ class Puppeteer:
 				self.locked = True
 		else:
 			self.movementInterface.SetMovement((0, 0), 0)
-			print("Locked")
+			#print("Locked")
 			if(PS is not None and PS):
 				self.locked = False
-				print("Unlocked")
+				#print("Unlocked")
 
 	def lerp(self, start, end, t):
 		return start + (end - start) * t
@@ -68,17 +68,17 @@ class GamepadInterface:
 				return self.gamePad.axis(inputName)
 		else:
 			if(self.gamePad is None):
-				print("Gamepad is not connected")
+				#print("Gamepad is not connected")
 				if(Gamepad.available(1)):
 					print("Gamepad is available")
 					self.gamePad = self.gamePadType(1)
 					self.gamePad.startBackgroundUpdates()
 			elif(not self.gamePad.isConnected()):
-				print("Gamepad is not connected")
+				#print("Gamepad is not connected")
 				self.gamePad.disconnect()
 				self.gamePad = None
 			else:
-				print("Gamepad is not connected")
+				#print("Gamepad is not connected")
 			return None
 		
 
