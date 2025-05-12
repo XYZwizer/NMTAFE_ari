@@ -70,7 +70,7 @@ class GamepadInterface:
 			if(self.gamePad is None):
 				#print("Gamepad is not connected")
 				if(Gamepad.available(1)):
-					print("Gamepad is available")
+					#print("Gamepad is available")
 					self.gamePad = self.gamePadType(1)
 					self.gamePad.startBackgroundUpdates()
 			elif(not self.gamePad.isConnected()):
@@ -115,10 +115,10 @@ class RosMovementInterface:
 	def SetMovement(self, movement, speed):
 		if self.hasPublisher:
 			twist = self._toTwist(movement, speed)
-			print(f"Publishing: {twist}")
+			#print(f"Publishing: {twist}")
 			self.publisher.publish(twist)
 		else:
-			print("No publisher available")
+			...#print("No publisher available")
 	
 	
 
