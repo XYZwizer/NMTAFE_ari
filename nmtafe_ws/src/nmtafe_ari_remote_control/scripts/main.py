@@ -3,6 +3,8 @@ import Gamepad
 import time
 from geometry_msgs.msg import Twist
 import rospy
+from subprocess import call
+import os
 
 class Puppeteer:
 	def __init__(self):
@@ -69,6 +71,7 @@ class GamepadInterface:
 		else:
 			if(self.gamePad is None):
 				#print("Gamepad is not connected")
+				rc = call(os.path.dirname(__file__) + "/" + "pair_to_dedicated_dualsense.sh AC:36:1B:98:7B:6B", shell=True)
 				if(Gamepad.available(1)):
 					#print("Gamepad is available")
 					self.gamePad = self.gamePadType(1)
