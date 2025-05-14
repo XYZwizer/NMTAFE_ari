@@ -255,6 +255,9 @@
     </style>
 </head>
 <body>
+    <!-- Load shared controls -->
+    <script src="shared_controls.js"></script>
+    
     <div class="editor-container">
         <div class="sidebar">
             <div class="sidebar-header">
@@ -273,6 +276,13 @@
                 <div id="copy-notification" class="copy-notification">JSON copied to clipboard!</div>
             </div>
             
+            <div class="slide-controls" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label for="presentation-title">Presentation Title:</label>
+                    <input type="text" id="presentation-title" class="form-control" placeholder="Enter presentation title">
+                </div>
+            </div>
+            
             <div class="slide-preview" id="current-slide-preview">
                 <!-- Current slide preview goes here -->
             </div>
@@ -286,6 +296,13 @@
                 <div class="form-group">
                     <label for="slide-text">Text to Say:</label>
                     <textarea id="slide-text" class="form-control" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="slide-show-text"> 
+                        Show text on screen
+                    </label>
                 </div>
                 
                 <div class="form-group">
@@ -303,7 +320,13 @@
                     <div class="slide-operations">
                         <button id="move-up" class="btn btn-secondary">Move Up</button>
                         <button id="move-down" class="btn btn-secondary">Move Down</button>
+                        <button id="duplicate-slide" class="btn btn-secondary">Duplicate Slide</button>
                         <button id="delete-slide" class="btn btn-danger">Delete Slide</button>
+                    </div>
+                    <div class="tts-controls" style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button id="test-tts" class="btn" style="background-color: #9b59b6;">Test TTS</button>
+                        <button id="stop-tts" class="btn" style="background-color: #e74c3c;">Stop TTS</button>
+                        <button id="test-motion" class="btn" style="background-color: #2980b9;">Test Motion</button>
                     </div>
                 </div>
             </div>
@@ -313,6 +336,7 @@
     <script>
         let slidesData = [];
         let currentSlideIndex = 0;
+        let presentationTitle = "";
 
         //load slides.json
         fetch('slides.json')
@@ -321,11 +345,15 @@
                 // {
                 //     "image": "",
                 //     "say": "Welcome to the presentation!",
+                //     "showOnScreen": true,
                 //     "motion": "",
                 //     "duration": 3
                 // }
                 
                 slidesData = data.slides;
+                presentationTitle = data.title || "";
+                document.getElementById('presentation-title').value = presentationTitle;
+                
                 renderThumbnails();
                 if (slidesData.length > 0) {
                     selectSlide(0);
@@ -366,6 +394,7 @@
             // Update form fields
             document.getElementById('slide-image').value = slide.image || '';
             document.getElementById('slide-text').value = slide.say || '';
+            document.getElementById('slide-show-text').checked = slide.showOnScreen !== false; // Default to true if undefined
             document.getElementById('slide-motion').value = slide.motion || '';
             document.getElementById('slide-duration').value = slide.duration || '';
             
@@ -389,12 +418,15 @@
             img.src = slide.image || 'placeholder.jpg';
             img.alt = 'Slide Preview';
             
-            const textOverlay = document.createElement('div');
-            textOverlay.className = 'slide-text-preview';
-            textOverlay.textContent = slide.say || '';
-            
             previewContainer.appendChild(img);
-            previewContainer.appendChild(textOverlay);
+            
+            // Only add text overlay if showOnScreen is true
+            if (slide.showOnScreen !== false && slide.say) {
+                const textOverlay = document.createElement('div');
+                textOverlay.className = 'slide-text-preview';
+                textOverlay.textContent = slide.say || '';
+                previewContainer.appendChild(textOverlay);
+            }
         }
         
         function updateNavigationButtonsState() {
@@ -417,7 +449,8 @@
                 image: "placeholder.jpg",
                 say: "New slide content",
                 motion: "",
-                duration: 3
+                duration: 3,
+                showOnScreen: true
             };
             
             slidesData.push(newSlide);
@@ -480,9 +513,30 @@
             console.log('Moved slide down to index:', currentSlideIndex);
         }
         
+        function duplicateCurrentSlide() {
+            // Create a deep copy of the current slide
+            const currentSlide = slidesData[currentSlideIndex];
+            const duplicatedSlide = JSON.parse(JSON.stringify(currentSlide));
+            
+            // Insert after the current slide
+            slidesData.splice(currentSlideIndex + 1, 0, duplicatedSlide);
+            
+            // Move to the duplicated slide
+            currentSlideIndex++;
+            
+            renderThumbnails();
+            selectSlide(currentSlideIndex);
+            
+            console.log('Duplicated slide to index:', currentSlideIndex);
+        }
+        
         function copyJsonToClipboard() {
-            // Create a copy of the slides data
+            // Get the current title
+            presentationTitle = document.getElementById('presentation-title').value;
+            
+            // Create a copy of the slides data with title
             const jsonData = {
+                title: presentationTitle,
                 slides: slidesData
             };
             
@@ -516,6 +570,7 @@
             
             slide.image = document.getElementById('slide-image').value;
             slide.say = document.getElementById('slide-text').value;
+            slide.showOnScreen = document.getElementById('slide-show-text').checked;
             slide.motion = document.getElementById('slide-motion').value;
             slide.duration = document.getElementById('slide-duration').value;
             
@@ -529,9 +584,35 @@
         // Set up additional buttons
         document.getElementById('add-slide').addEventListener('click', createNewSlide);
         document.getElementById('delete-slide').addEventListener('click', deleteCurrentSlide);
+        document.getElementById('duplicate-slide').addEventListener('click', duplicateCurrentSlide);
         document.getElementById('move-up').addEventListener('click', moveSlideUp);
         document.getElementById('move-down').addEventListener('click', moveSlideDown);
         document.getElementById('copy-json').addEventListener('click', copyJsonToClipboard);
+        
+        // TTS control buttons
+        document.getElementById('test-tts').addEventListener('click', () => {
+            const text = document.getElementById('slide-text').value;
+            if (text.trim()) {
+                sayText(text);
+            } else {
+                alert('No text to speak! Please enter text first.');
+            }
+        });
+        
+        document.getElementById('stop-tts').addEventListener('click', () => {
+            // Send empty text to stop TTS
+            sayText(" ");
+        });
+        
+        // Motion test button
+        document.getElementById('test-motion').addEventListener('click', () => {
+            const motion = document.getElementById('slide-motion').value;
+            if (motion.trim()) {
+                doMotion(motion);
+            } else {
+                alert('No motion specified! Please enter a motion first.');
+            }
+        });
     </script>
 </body>
 </html>

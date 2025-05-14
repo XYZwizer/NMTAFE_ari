@@ -39,6 +39,33 @@
             object-fit: contain;
             display: block;
         }
+        
+        #text-overlay {
+            position: absolute;
+            bottom: 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            max-width: 80%;
+            text-align: center;
+            font-size: 1.9rem;
+            z-index: 5;
+        }
+        
+        #presentation-title {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 9;
+        }
+        
         #startBtn {
             position: absolute;
             top: 50%;
@@ -60,10 +87,16 @@
     </style>
 </head>
 <body>
+    <div id="presentation-title"></div>
     <button id="startBtn">Start Slideshow</button>
     <div id="slideshow-container" style="display:none;">
         <img id="slideshow" src="" alt="Slideshow" />
+        <div id="text-overlay" style="display:none;"></div>
     </div>
+    
+    <!-- Load shared controls -->
+    <script src="shared_controls.js"></script>
+    
     <script>
         // tts endpoint = http://ari-20c/action/tts
         //tts data structure
@@ -100,6 +133,8 @@
         const img = document.getElementById('slideshow');
         const container = document.getElementById('slideshow-container');
         const btn = document.getElementById('startBtn');
+        const textOverlay = document.getElementById('text-overlay');
+        const titleOverlay = document.getElementById('presentation-title');
         
         // Function to load the slide data from the JSON file
         async function loadSlideData() {
@@ -107,53 +142,17 @@
                 const response = await fetch('slides.json');
                 const data = await response.json();
                 slideData = data.slides;
+                
+                // Display presentation title
+                if (data.title) {
+                    const titleElement = document.getElementById('presentation-title');
+                    titleElement.textContent = data.title;
+                }
+                
                 console.log('Slides loaded:', slideData.length);
             } catch (error) {
                 console.error('Error loading slides:', error);
                 alert('Error loading slides: ' + error.message);
-            }
-        }        // Function to call the TTS endpoint
-        async function sayText(text) {
-            if (!text) return;
-            
-            try {
-                const response = await fetch('http://ari-20c/action/tts', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        rawtext: {
-                            text: text,
-                            lang_id: "en_GB"
-                        }
-                    })
-                });
-                
-                console.log('TTS response:', await response.json());
-            } catch (error) {
-                console.error('Error calling TTS:', error);
-            }
-        }
-        
-        // Function to call the motion endpoint
-        async function doMotion(motion) {
-            if (!motion) return;
-            
-            try {
-                const response = await fetch('http://ari-20c/action/motion_manager', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        filename: motion
-                    })
-                });
-                
-                console.log('Motion response:', await response.json());
-            } catch (error) {
-                console.error('Error calling motion:', error);
             }
         }
 
@@ -171,6 +170,15 @@
             if (slide.motion) {
                 doMotion(slide.motion);
             }
+            
+            // Handle text display based on showOnScreen property
+            const textOverlay = document.getElementById('text-overlay');
+            if (slide.showOnScreen && slide.say) {
+                textOverlay.textContent = slide.say;
+                textOverlay.style.display = 'block';
+            } else {
+                textOverlay.style.display = 'none';
+            }
         }
 
         function stopSlideshow() {
@@ -182,9 +190,11 @@
             if (document.fullscreenElement) {
                 document.exitFullscreen();
             }
-            
+            sayText(" ");
+            document.getElementById('text-overlay').style.display = 'none';
             container.style.display = 'none';
             btn.style.display = 'block';
+            titleOverlay.style.display = 'block'; // Show title again
             slideshowActive = false;
             idx = 0; // Reset to the first slide
         }
@@ -198,6 +208,7 @@
                 }
                 
                 btn.style.display = 'none';
+                titleOverlay.style.display = 'none'; // Hide title during slideshow
                 container.style.display = 'flex';
                 document.documentElement.requestFullscreen();
                 slideshowActive = true;
