@@ -160,10 +160,6 @@
         function showImage(i) {
             if (i < 0 || i >= slideData.length) return;
             const slide = slideData[i];
-            //if the image path has no file extension, add .png
-            if (!slide.image.endsWith('.png')) {
-                slide.image += '.png';
-            }
             img.src = slide.image;
             
             // Call TTS if there's text to say
@@ -205,13 +201,22 @@
                 container.style.display = 'flex';
                 document.documentElement.requestFullscreen();
                 slideshowActive = true;
-                showImage(idx);
                 
-                interval = setInterval(() => {
-                    idx = (idx + 1) % slideData.length;
-                    showImage(idx);
-                }, slideData[idx].duration * 1000 || 3000);
+                // Start the slideshow loop
+                showNextSlide();
             });
+        }
+        
+        function showNextSlide() {
+            if (!slideshowActive) return;
+            
+            showImage(idx);
+            
+            // Schedule the next slide using the current slide's duration
+            setTimeout(() => {
+                idx = (idx + 1) % slideData.length;
+                showNextSlide();
+            }, slideData[idx].duration * 1000);
         }
         
         btn.addEventListener('click', startSlideshow);
