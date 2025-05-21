@@ -1,75 +1,59 @@
-import * as RRLIB from '../../js/modules/rrlib.js'
-/*
-function get_pages() {
-	fetch('http://' + window.location.hostname + '/touch_web_mgr').then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();  
-                })
-                .then(data => console.log(data))  
-                .catch(error => console.error('Failed to fetch data:', error)); 
+import rosWeb from './ROS_WEB.js';
+
+// Sample presentation data - replace this with actual data from your backend if available
+const PRESENTATIONS = [
+    { id: "mac_page_4", displayName: "Macarina Test" },
+    { id: "GLaDOS", displayName: "Glados Sound Board" },
+    { id: "cyberwest_v5", displayName: "Cyber West" }
+];
+
+// Function to generate presentation buttons
+function generatePresentationButtons(presentations) {
+    const grid = document.getElementById('presentation-grid');
+    grid.innerHTML = ''; // Clear existing content
+    
+    presentations.forEach(presentation => {
+        const button = document.createElement('button');
+        button.className = 'presentation-button';
+        button.id = presentation.id || presentation.internalName;
+        
+        // Create display name element
+        const displayNameElement = document.createElement('div');
+        displayNameElement.className = 'display-name';
+        displayNameElement.textContent = presentation.displayName || presentation.title || presentation.id;
+        
+        // Create internal name element (smaller text below)
+        const internalNameElement = document.createElement('div');
+        internalNameElement.className = 'internal-name';
+        internalNameElement.style.fontSize = '12px';
+        internalNameElement.style.opacity = '0.7';
+        internalNameElement.style.marginTop = '5px';
+        internalNameElement.textContent = presentation.id || presentation.internalName;
+        
+        // Add elements to button
+        button.appendChild(displayNameElement);
+        button.appendChild(internalNameElement);
+        
+        // Add click event
+        button.addEventListener('click', function() {
+            window.Power_point_slected(this);
+        });
+        
+        grid.appendChild(button);
+    });
+	console.log("Presentation buttons generated:", presentations);
 }
-*/
-window.Power_point_slected = ((Button_pressed) => {
-	console.log(Button_pressed)
-	window.web_go_to.publish({
-		type: 4,
-		value: Button_pressed.id
-	})
-});
+// Check if document is already loaded, otherwise wait for DOMContentLoaded
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+} else {
+    // Document already loaded, run initialization immediately
+    initApp();
+}
 
-window.set_vol = ((volume_slider) => {
-	console.log(volume_slider);
-	window.volume_pram.set(volume_slider.value);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-	var i_ros = new RRLIB.Ros({
-		host: 'http://' + window.location.hostname
-	});
-	
-	window.web_go_to = new RRLIB.Topic({
-			ros: i_ros,
-			name: "web_go_to"
-	});
-	
-	window.volume_pram = new RRLIB.Param({
-		ros: i_ros,
-		name: "volume"
-	});
-	
-	window.volume_pram.get((curent_vol) => { 
-		document.getElementById("volume_slider").value = curent_vol;
-	});
-	
-	console.log("Hello World!");
-});
-
-
-	//var motion_list_param = new RRLIB.Param({
-	//	ros: i_ros,
-	//	name: "motion_list"
-	//});
-	
-	//motion_list_param.get(function(e) {
-	//	console.log("got pram")
-	//	console.log(e)
-	//	document.getElementById("a_p").innerHTML = "someTHING DID!!!!";
-	//});
-	
-	/*const container = document.getElementById('a_p');
-	
-	for (page in get_pages().page_list) {
-	var newDiv = document.createElement('div');
-	newDiv.className = 'formatted-div'; // Add a class for styling
-
-// Add formatted HTML content
-newDiv.innerHTML = `
-  <p style="font-size: 16px; line-height: 1.5;">
-    open ${page.title}
-  </p>
-`;
-
-container.appendChild(newDiv);
-	}*/
+function initApp() {
+    console.log('onDomLoaded list');
+    rosWeb.init();
+    generatePresentationButtons(PRESENTATIONS);
+    console.log("Presentation navigator loaded!");
+}
