@@ -2,7 +2,7 @@ import rosWeb from './ROS_WEB.js';
 
 // Sample presentation data - replace this with actual data from your backend if available
 const PRESENTATIONS = [
-    { id: "mac_page_4", displayName: "Macarina Test" },
+    { id: "test_page", displayName: "Test" },
     { id: "GLaDOS", displayName: "Glados Sound Board" },
     { id: "cyberwest_v5", displayName: "Cyber West" }
 ];

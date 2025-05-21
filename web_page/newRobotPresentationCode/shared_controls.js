@@ -2,15 +2,16 @@ async function goToPage(page) {
     if (!page) return;
     
     try {
+        const jsonStr = JSON.stringify({
+            type: 4,
+            value: page,
+        })
+        const formData = new FormData();
+        formData.append('data', jsonStr);
+        
         const response = await fetch('http://ari-20c/topic/web_go_to', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                type: "4",
-                value: page,
-            })
+            body: formData
         });
         
         console.log('Go to page response:', await response.json());
