@@ -6,12 +6,11 @@ async function goToPage(page) {
             type: 4,
             value: page,
         })
-        const formData = new FormData();
-        formData.append('data', jsonStr);
         
-        const response = await fetch('http://ari-20c/topic/web_go_to', {
+        const response = await fetch('http://localhost/topic/web_go_to', {
             method: 'POST',
-            body: formData
+            body: 'data=' + encodeURIComponent(jsonStr),
+	    headers: { "Content-type": "application/x-www-form-urlencoded; charset=UTF-8" }
         });
         
         console.log('Go to page response:', await response.json());
