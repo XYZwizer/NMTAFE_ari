@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Image Slideshow</title>
+	<script type="module" src="js/list_presentations.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #000;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        img {
+            max-width: 100vw;
+            max-height: 100vh;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: auto;
+        }
+        #startBtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            padding: 1rem 2rem;
+            z-index: 10;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        #startBtn:hover {
+            background-color: #45a049;
+        }
+    </style>
+	<style>
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #04AA6D;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #04AA6D;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+	<input type="range" min="1" max="100" value="50" class="slider" id="volume_slider" oninput="set_vol(this)">
+
+    <button id="mac_page_4" onClick="Power_point_slected(this)">mac_page_4</button>
+    <img id="slideshow" src="" alt="Slideshow" style="display:none;" />
+</body>
+</html>
+
+
+
+<!--html>
+    <head>
+		<script type="module" src="js/list_presentations.js"></script>
+
+	</head>
+	<body>
+	
+	<p>pading</p>
+	<p>pading</p>
+	<p>pading</p>
+	<p>pading</p>
+	<p>pading</p>
+	<p>pading</p>
+	<p>pading</p>
+	<p>pading</p>
+
+	<p id="a_p">nothing</p>
+	
+	</body>
+</html--!>
