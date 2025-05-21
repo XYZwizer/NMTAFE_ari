@@ -1,3 +1,24 @@
+async function goToPage(page) {
+    if (!page) return;
+    
+    try {
+        const response = await fetch('http://ari-20c/topic/web_go_to', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                type: "4",
+                value: page,
+            })
+        });
+        
+        console.log('Go to page response:', await response.json());
+    } catch (error) {
+        console.error('Error calling goToPage:', error);
+    }
+}
+
 // Function to call the motion endpoint
 async function doMotion(motion) {
     if (!motion) return;

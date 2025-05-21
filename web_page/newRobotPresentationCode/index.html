@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fullscreen Image Slideshow</title>
+    <!-- Load shared controls -->
+    <script src="shared_controls.js"></script>
     <style>
         html, body {
             height: 100%;
@@ -126,14 +128,14 @@
         <div id="text-overlay" style="display:none;"></div>
     </div>
     
-    <!-- Load shared controls -->
-    <script src="shared_controls.js"></script>
+    
     
     <script>
         let slideData = [];
         let idx = 0;
         let interval = null;
         let slideshowActive = false;
+        let slideshowLoop = false;
         const preSlideshowContainer = document.getElementById('pre-slideshow');
         const slideshowContainer = document.getElementById('slideshow-container');
         const slideshowImage = document.getElementById('slideshow');
@@ -152,13 +154,16 @@
                 const data = await response.json();
                 slideData = data.slides;
                 
+                // Store the loop setting
+                slideshowLoop = data.loop !== undefined ? data.loop : false;
+                
                 // Display presentation title
                 if (data.title) {
                     const titleElement = document.getElementById('presentation-title');
                     titleElement.textContent = data.title;
                 }
                 
-                console.log('Slides loaded:', slideData.length);
+                console.log('Slides loaded:', slideData.length, 'Loop mode:', slideshowLoop);
             } catch (error) {
                 console.error('Error loading slides:', error);
                 alert('Error loading slides: ' + error.message);
@@ -201,7 +206,6 @@
             sayText(" ");
             textOverlay.style.display = 'none';
 
-
             preSlideshowContainer.style.display = 'block';
             slideshowContainer.style.display = 'none';
             
@@ -234,17 +238,37 @@
             
             // Schedule the next slide using the current slide's duration
             setTimeout(() => {
-                idx = (idx + 1) % slideData.length;
+                idx = (idx + 1);
+                
+                // Handle reaching the end of slides
+                if (idx >= slideData.length) {
+                    if (slideshowLoop) {
+                        // Loop back to the first slide if loop is enabled
+                        idx = 0;
+                    } else {
+                        // Stop the slideshow if loop is disabled and we've reached the end
+                        stopSlideshow();
+                        return;
+                    }
+                }
+                
                 showNextSlide();
             }, slideData[idx].duration * 1000);
         }
         
         startbutton.addEventListener('click', startSlideshow);
         
+        // Handle Return To Presentation Manager button
+        const returnButton = document.getElementById('returnBtn');
+        returnButton.addEventListener('click', () => {
+            //add fucntion to return to presentation manager
+            goToPage('list_our_pages');
+        });
+        
         // Handle clicks anywhere on the document to exit slideshow
         document.addEventListener('click', function(event) {
             // Only respond to clicks if slideshow is active and if the click wasn't on the start button
-            if (slideshowActive && event.target !== startbutton) {
+            if (slideshowActive && event.target !== startbutton && event.target !== returnButton) {
                 stopSlideshow();
                 event.preventDefault();
             }
