@@ -1,0 +1,20 @@
+{
+  "title": "TestPresentation",
+  "loop": false,
+  "slides": [
+    {
+      "image": "engie.png",
+      "say": "This is the test slide 1",
+      "motion": "",
+      "duration": "3",
+      "showOnScreen": true
+    },
+    {
+      "image": "noImgs.png",
+      "say": "This is the test slide 2",
+      "motion": "",
+      "duration": "3",
+      "showOnScreen": true
+    }
+  ]
+}

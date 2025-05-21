@@ -18,6 +18,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: Arial, sans-serif;
         }
         
         #slideshow-container {
@@ -84,11 +85,42 @@
         #startBtn:hover {
             background-color: #45a049;
         }
+        #returnBtn {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.1rem;
+            padding: 1rem 2rem; 
+            z-index: 10;
+            cursor: pointer;
+            background-color: #f48f36;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        #returnBtn:hover {
+            background-color: #e59935;
+        }
+        
+        #version-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #999;
+            font-size: 0.8rem;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
-    <div id="presentation-title"></div>
-    <button id="startBtn">Start Slideshow</button>
+    <div id="pre-slideshow">
+        <div id="version-info">Airs Slideshow Player v1.0</div>
+        <div id="presentation-title"></div>
+        <button id="startBtn">Start Slideshow</button>
+        <button id="returnBtn">Return To Presentation Manager</button>
+    </div>
     <div id="slideshow-container" style="display:none;">
         <img id="slideshow" src="" alt="Slideshow" />
         <div id="text-overlay" style="display:none;"></div>
@@ -98,41 +130,14 @@
     <script src="shared_controls.js"></script>
     
     <script>
-        // tts endpoint = http://ari-20c/action/tts
-        //tts data structure
-        // data = {
-        //   "rawtext": {
-        //     "text": "Hey, Juana, how are you?",
-        //     "lang_id": "en_GB"
-        //   }
-        // }
-
-        // motion endpoint = http://ari-20c/action/motion_manager
-        // motion data structure
-        // {"filename": "shake_left"}
-
-        //volume endpoint = http://ari-20c/parameter/volume
-
-        async function setvolume(v) {
-            const response = await fetch('http://ari-20c/parameter/volume', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    volume: v
-                })
-            });
-            console.log('Volume response:', await response.json());
-            console.log(response);
-        }
         let slideData = [];
         let idx = 0;
         let interval = null;
         let slideshowActive = false;
-        const img = document.getElementById('slideshow');
-        const container = document.getElementById('slideshow-container');
-        const btn = document.getElementById('startBtn');
+        const preSlideshowContainer = document.getElementById('pre-slideshow');
+        const slideshowContainer = document.getElementById('slideshow-container');
+        const slideshowImage = document.getElementById('slideshow');
+        const startbutton = document.getElementById('startBtn');
         const textOverlay = document.getElementById('text-overlay');
         const titleOverlay = document.getElementById('presentation-title');
         
@@ -140,6 +145,10 @@
         async function loadSlideData() {
             try {
                 const response = await fetch('slides.json');
+                //if response is not ok, throw an error
+                if (!response.ok) {
+                    throw new Error('Could not load slides.json: ' + response.statusText);
+                }
                 const data = await response.json();
                 slideData = data.slides;
                 
@@ -159,7 +168,7 @@
         function showImage(i) {
             if (i < 0 || i >= slideData.length) return;
             const slide = slideData[i];
-            img.src = slide.image;
+            slideshowImage.src = slide.image;
             
             // Call TTS if there's text to say
             if (slide.say) {
@@ -172,7 +181,6 @@
             }
             
             // Handle text display based on showOnScreen property
-            const textOverlay = document.getElementById('text-overlay');
             if (slide.showOnScreen && slide.say) {
                 textOverlay.textContent = slide.say;
                 textOverlay.style.display = 'block';
@@ -181,7 +189,7 @@
             }
         }
 
-        function stopSlideshow() {
+        function stopSlideshow(forced = false) {
             if (interval) {
                 clearInterval(interval);
                 interval = null;
@@ -191,10 +199,12 @@
                 document.exitFullscreen();
             }
             sayText(" ");
-            document.getElementById('text-overlay').style.display = 'none';
-            container.style.display = 'none';
-            btn.style.display = 'block';
-            titleOverlay.style.display = 'block'; // Show title again
+            textOverlay.style.display = 'none';
+
+
+            preSlideshowContainer.style.display = 'block';
+            slideshowContainer.style.display = 'none';
+            
             slideshowActive = false;
             idx = 0; // Reset to the first slide
         }
@@ -206,10 +216,9 @@
                     console.error('No slides loaded');
                     return;
                 }
-                
-                btn.style.display = 'none';
-                titleOverlay.style.display = 'none'; // Hide title during slideshow
-                container.style.display = 'flex';
+                // Hide pre-slideshow elements
+                preSlideshowContainer.style.display = 'none';
+                slideshowContainer.style.display = 'flex';
                 document.documentElement.requestFullscreen();
                 slideshowActive = true;
                 
@@ -230,12 +239,12 @@
             }, slideData[idx].duration * 1000);
         }
         
-        btn.addEventListener('click', startSlideshow);
+        startbutton.addEventListener('click', startSlideshow);
         
         // Handle clicks anywhere on the document to exit slideshow
         document.addEventListener('click', function(event) {
             // Only respond to clicks if slideshow is active and if the click wasn't on the start button
-            if (slideshowActive && event.target !== btn) {
+            if (slideshowActive && event.target !== startbutton) {
                 stopSlideshow();
                 event.preventDefault();
             }
