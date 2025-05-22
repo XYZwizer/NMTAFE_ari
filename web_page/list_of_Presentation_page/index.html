@@ -33,12 +33,13 @@
           padding: 10px;
           background: rgba(0,0,0,0.2);
           border-radius: 10px;
+          min-height: 35px;
       }
       
       .volume-control {
           display: flex;
           align-items: center;
-          width: 200px;
+          width: 400px;
       }
       
       .volume-icon {
@@ -46,11 +47,11 @@
           font-size: 20px;
 		  font-family: EFont;
       }
-        .slider {
+      .slider {
           -webkit-appearance: none;
           appearance: none;
-          width: 150px;
-          height: 8px;
+          width: 300px;
+          height: 14px;
           border-radius: 5px;
           background: #d3d3d3;
           outline: none;
@@ -66,16 +67,16 @@
       .slider::-webkit-slider-thumb {
           -webkit-appearance: none;
           appearance: none;
-          width: 16px;
-          height: 16px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
           background: #04AA6D;
           cursor: pointer;
       }
 
       .slider::-moz-range-thumb {
-          width: 16px;
-          height: 16px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
           background: #04AA6D;
           cursor: pointer;
@@ -90,12 +91,12 @@
       }
       
       .presentation-button {
-          background: linear-gradient(145deg, #2a2a2a, #333);
+          background: linear-gradient(145deg, #dad9bd, #333);
           color: white;
           border: none;
           border-radius: 10px;
           padding: 15px 10px;
-          min-height: 80px;
+          min-height: 100px;
           font-size: 16px;
           cursor: pointer;
           text-align: center;
@@ -110,7 +111,7 @@
       .presentation-button:hover {
           transform: translateY(-3px);
           box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-          background: linear-gradient(145deg, #333, #444);
+          background: linear-gradient(145deg, #dad9bd, #b99d48);
       }
       
       .presentation-button:active {
@@ -140,7 +141,11 @@
         <div class="volume-control">
             <span class="volume-icon">🔊</span>
             <input type="range" min="1" max="100" value="50" class="slider" id="volume_slider" oninput="set_vol(this)">
+            <p style="margin-left: 15px;" id="volume-text">50</p>
         </div>
+        <h2 style="margin-top: 2px; margin-bottom: 2px;">
+            Sam & Jarrah PresentationManager v1.0
+        </h2>
     </div>
     
     <div id="presentation-grid" class="presentation-grid">
@@ -148,5 +153,28 @@
     </div>
     
     <img id="slideshow" src="" alt="Slideshow" style="display:none;" />
+
+    <script>
+        // Function to set the volume
+        function set_vol2(slider) {
+            const volume = slider.value;
+            document.getElementById('volume-text').innerText = volume;
+            // Add your volume setting logic here
+        }
+
+        //bind the set_vol function to the slider
+        document.getElementById('volume_slider').addEventListener('input', function() {
+            set_vol2(this);
+        });
+
+        //setup a callback to set_vol2 after 0.5 seconds
+        let timeout;
+        document.getElementById('volume_slider').addEventListener('input', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                set_vol2(this);
+            }, 500);
+        });
+    </script>
 </body>
 </html>

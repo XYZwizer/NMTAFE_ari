@@ -23,7 +23,7 @@ class ROS_WEB {
     init() {
         if (this.mockMode) {
             console.info('🤖 Running in MOCK MODE - No ROS functionality available');
-            this._initMock();
+            //this._initMock();
         } else {
             console.log('running in realmode')
             this._initReal();

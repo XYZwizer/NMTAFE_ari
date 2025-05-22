@@ -53,7 +53,11 @@ if (document.readyState === "loading") {
 
 function initApp() {
     console.log('onDomLoaded list');
-    rosWeb.init();
+    try{
+        rosWeb.init();
+    }catch(error){
+        console.error('Failed to initialize ROS:', error);
+    }
     generatePresentationButtons(PRESENTATIONS);
     console.log("Presentation navigator loaded!");
 }
