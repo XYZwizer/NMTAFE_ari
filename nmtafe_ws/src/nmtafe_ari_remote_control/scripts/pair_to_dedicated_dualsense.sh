@@ -8,7 +8,7 @@ while [[ "$(bluetoothctl devices)" != *"$bluetooth_mac"* ]]; do
         timeout 1 bluetoothctl scan on
 done
 echo "trying to pair"
-echo "pair $bluetooth_mac" | bluetoothctl
+#echo "pair $bluetooth_mac" | bluetoothctl
 
 while [[ "$(bluetoothctl paired-devices)" != *"$bluetooth_mac"* ]]; do
 	timeout 2 bluetoothctl pair $bluetooth_mac
