@@ -113,10 +113,25 @@
           box-shadow: 0 6px 12px rgba(0,0,0,0.4);
           background: linear-gradient(145deg, #dad9bd, #b99d48);
       }
-      
-      .presentation-button:active {
+        .presentation-button:active {
           transform: translateY(1px);
           box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      }
+      
+      /* Hidden presentation styling */
+      .presentation-button.hidden-presentation {
+          background: linear-gradient(145deg, #8B4513, #A0522D);
+          border: 2px solid rgba(255, 215, 0, 0.3);
+      }
+      
+      .presentation-button.hidden-presentation:hover {
+          background: linear-gradient(145deg, #A0522D, #CD853F);
+          border: 2px solid rgba(255, 215, 0, 0.5);
+      }
+      
+      .hidden-indicator {
+          color: rgba(255, 215, 0, 0.8);
+          font-weight: bold;
       }
       
       /* Modal image viewer */

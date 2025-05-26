@@ -175,14 +175,16 @@
             const slide = slideData[i];
             slideshowImage.src = slide.image;
             
+            console.log(`Say: ${slide.say}\nMotion: ${slide.motion}`)
+
             // Call TTS if there's text to say
             if (slide.say) {
-                sayText(slide.say);
+                sayText(slide.say); //called in shared_controls.js
             }
             
             // Execute motion if specified
             if (slide.motion) {
-                doMotion(slide.motion);
+                doMotion(slide.motion); //called in shared_controls.js
             }
             
             // Handle text display based on showOnScreen property
@@ -262,7 +264,7 @@
         const returnButton = document.getElementById('returnBtn');
         returnButton.addEventListener('click', () => {
             //add fucntion to return to presentation manager
-            goToPage('LIST_OUR_PAGES');
+            goToPage('list_our_pages');
         });
         
         // Handle clicks anywhere on the document to exit slideshow
