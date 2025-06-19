@@ -6,6 +6,7 @@ const PRESENTATIONS = [
     { id: "GLaDOS", displayName: "Glados Sound Board", hidden: true },
     { id: "cyberwest_v6", displayName: "Cyber West" },
     { id: "joondulup_v2", displayName: "Joondulup" },
+    { url: "http://selfie:5000", displayName: "Selfie Cam" },
 ];
 
 // Hidden presentations state
@@ -23,10 +24,17 @@ function generatePresentationButtons(presentations) {
         if (presentation.hidden && !showHiddenPresentations) {
             return;
         }
-        
-        const button = document.createElement('button');
+          const button = document.createElement('button');
         button.className = 'presentation-button';
-        button.id = presentation.id || presentation.internalName;
+        button.id = presentation.id || presentation.url || presentation.internalName;
+        
+        // Store presentation data on the button for easy access
+        button.presentationData = presentation;
+        
+        // Add special styling for URL presentations
+        if (presentation.url) {
+            button.classList.add('url-presentation');
+        }
         
         // Add special styling for hidden presentations
         if (presentation.hidden) {
@@ -60,10 +68,16 @@ function generatePresentationButtons(presentations) {
         // Add elements to button
         button.appendChild(displayNameElement);
         button.appendChild(internalNameElement);
-        
-        // Add click event
+          // Add click event
         button.addEventListener('click', function() {
-            window.Power_point_slected(this);
+            const presentation = this.presentationData;
+            if (presentation.url) {
+                // Handle URL presentations
+                rosWeb.goToPage(presentation.url, true);
+            } else {
+                // Handle regular ID-based presentations
+                rosWeb.goToPage(presentation.id, false);
+            }
         });
         
         grid.appendChild(button);

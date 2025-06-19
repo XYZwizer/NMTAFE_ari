@@ -90,6 +90,14 @@ class ROS_WEB {
             this._simulatePresentation(buttonId);
         }
     }
+    // Go to a page (presentation or URL)
+    goToPage(page, isURL = false) {
+        console.log("Going to page:", page, "isURL:", isURL);
+        this.web_go_to.publish({
+            type: isURL ? 2 : 4,
+            value: page
+        });
+    }
 }
 
 // Create global instance
