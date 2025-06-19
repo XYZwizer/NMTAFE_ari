@@ -6,7 +6,7 @@ const PRESENTATIONS = [
     { id: "GLaDOS", displayName: "Glados Sound Board", hidden: true },
     { id: "cyberwest_v6", displayName: "Cyber West" },
     { id: "joondulup_v2", displayName: "Joondulup" },
-    { url: "http://selfie:5000", displayName: "Selfie Cam" },
+    { id: "murray_selfie", displayName: "Selfie Cam" },
 ];
 
 // Hidden presentations state

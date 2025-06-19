@@ -10,7 +10,7 @@ async function goToPage(page) {
         const response = await fetch('http://localhost/topic/web_go_to', {
             method: 'POST',
             body: 'data=' + encodeURIComponent(jsonStr),
-	    headers: { "Content-type": "application/x-www-form-urlencoded; charset=UTF-8" }
+	        headers: { "Content-type": "application/x-www-form-urlencoded; charset=UTF-8" }
         });
         
         console.log('Go to page response:', await response.json());
