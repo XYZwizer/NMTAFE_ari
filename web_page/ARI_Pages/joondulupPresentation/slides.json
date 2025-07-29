@@ -1,0 +1,55 @@
+{
+  "title": "City Of Joondalup",
+  "loop": false,
+  "slides": [
+    {
+      "image": "COJ Logo.jpg",
+      "say": "Welcome to the City of Joondalup",
+      "showOnScreen": true,
+      "motion": "brown_bear_response",
+      "duration": "3"
+    },
+    {
+      "image": "Joondalup - Boas Ave - Rev C (1).jpg",
+      "say": "Did you know that the City of Joondalup was only established by the Western Australian\ngovernment 25 years ago. Joondalup was established as the commercial, civic, and cultural\nhub of Perth's northern corridor. The City has a vibrant population of 165,000 people\napproximately of which 36 per cent were born overseas.",
+      "showOnScreen": true,
+      "motion": "this_way_left",
+      "duration": "23"
+    },
+    {
+      "image": "Joondalup - Boas Ave - Rev C (1).jpg",
+      "say": "This rich cultural diversity forms the basis of Joondalup’s reputation as a facilitator of attractive lifestyles and community\nwellbeing. Home to 17km of stunning coastline, biodiversity-rich natural areas, hundreds of\nfamily-friendly parks and world-class wetlands, the city attracts 1.6 million visitors annually.",
+      "showOnScreen": true,
+      "motion": "alive_6",
+      "duration": "22"
+    },
+    {
+      "image": "Joondalup - Davidson Terrace - Rev C.jpg",
+      "say": "The City of Joondalup serves over 500 000 people living within 20 minutes of its City Centre,\na number expected to grow significantly in the next decade. Joondalup hosts 13,000\nbusinesses supporting over 57,000 jobs.",
+      "showOnScreen": true,
+      "motion": "right_arm_sweep",
+      "duration": "17"
+    },
+    {
+      "image": "Joondalup - Davidson Terrace - Rev C.jpg",
+      "say": "The City generates $8.23 billion in gross regional product, and exports $2 billion in goods and services. Some of the key industries in\nJoondalup include Healthcare, Education and Training, and Retail. The City provides\nopportunities for residents, investors and students to live, study and work in Joondalup.",
+      "showOnScreen": true,
+      "motion": "alive_7",
+      "duration": "23"
+    },
+    {
+      "image": "Joondalup Masterplan - Aerial - Rev C.jpg",
+      "say": "In fact, Joondalup is home to the Joondalup Health Campus, one of the largest hospitals in\nWA. Joondalup houses world-leading cyber security, education, health and commercial\nfacilities. Our education precinct includes Edith Cowan University, WA Police Academy and\nNorth Metropolitan TAFE where you can equip yourself with skills for the jobs of the future\nincluding learning about robot control systems.",
+      "showOnScreen": true,
+      "motion": "show_right",
+      "duration": "26"
+    },
+    {
+      "image": "Joondalup Masterplan - Aerial - Rev C.jpg",
+      "say": "For a bit of fun, head Uptown. Visit\nwww.uptownjoondalup.com.au to find out about local events and places to eat and explore\nin the City of Joondalup.",
+      "showOnScreen": true,
+      "motion": "wave",
+      "duration": "15"
+    }
+  ]
+}

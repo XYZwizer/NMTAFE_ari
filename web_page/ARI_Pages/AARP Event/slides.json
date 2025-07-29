@@ -1,0 +1,27 @@
+{
+  "title": "AARP",
+  "loop": false,
+  "slides": [
+    {
+      "image": "img.jpg",
+      "say": "Welcome to the Australian Automation and Robotics Precinct - and to the June Edition of Bots and Bevs, our monthly networking sundowner at the AARP.",
+      "showOnScreen": true,
+      "motion": "brown_bear_response",
+      "duration": "12"
+    },
+    {
+      "image": "img.jpg",
+      "say": "We are delighted to welcome the students from Carey Baptist College and Curtin University this evening. ",
+      "showOnScreen": true,
+      "motion": "brown_bear_response",
+      "duration": "8"
+    },
+    {
+      "image": "img.jpg",
+      "say": "Thank you for coming and we hope you enjoy your time at the Precinct today. ",
+      "showOnScreen": true,
+      "motion": "wave",
+      "duration": "7"
+    }
+  ]
+}
