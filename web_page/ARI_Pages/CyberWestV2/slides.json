@@ -1,0 +1,167 @@
+{
+  "title": "NMTAFE Cyber West",
+  "loop": false,
+  "slides": [
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-01.png",
+      "say": "",
+      "motion": "",
+      "duration": "3",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-01.png",
+      "say": "North Metropolitan TAFE has more than a century-long\nhistory,",
+      "motion": "wave",
+      "duration": "4.5",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-02.png",
+      "say": "from its humble beginnings as Western Australia’s first vocational training and education\nprovider in 1900 to currently the state’s largest TAFE.",
+      "motion": "",
+      "duration": "10",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-03.png",
+      "say": "We offer over 350 courses to 30,000 students across nine\ncontemporary campuses in Perth’s north",
+      "motion": "show_left",
+      "duration": "7.3",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-03.png",
+      "say": "and north-\neastern metropolitan regions.",
+      "motion": "",
+      "duration": "4",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-04.png",
+      "say": "Whether you are just starting out in the workforce,\nlooking to upskill, change careers, or returning to work,\nour nationally recognized courses",
+      "motion": "obama_speech",
+      "duration": "8.5",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-04.png",
+      "say": "as well as\napprenticeships, traineeships, short courses, and skill\nsets will help you meet your goal.",
+      "motion": "alive_7",
+      "duration": "7.5",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-05.png",
+      "say": "Our lecturers are highly experienced and connected to\nindustry, and each campus has the facilities,",
+      "motion": "alive_3",
+      "duration": "6.1",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-05.png",
+      "say": "equipment,\nand technology that focus on preparing you to be job\nready.",
+      "motion": "alive_2",
+      "duration": "5",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-06.png",
+      "say": "Working closely with industry and employers, we use the\nknowledge and understanding of changing business\nmodels and contemporary",
+      "motion": "show_right",
+      "duration": "7.1",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-06.png",
+      "say": "training techniques to provide\nsolutions to meet the current and future skill\nrequirements of individuals, industry, and the\ncommunity.",
+      "motion": "alive_4",
+      "duration": "7.5",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-07.png",
+      "say": "To this end, and responding to the rapidly growing field\nin information technology and cyber security,",
+      "motion": "this_way_left",
+      "duration": "6",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-07.png",
+      "say": "our wide-\nranging courses are tailored to endow you with the latest\nknowledge and essential skills and training for a dynamic\ncareer in:",
+      "motion": "alive_7",
+      "duration": "7.5",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-08.png",
+      "say": "IT networking",
+      "motion": "alive_6",
+      "duration": "10",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-09.png",
+      "say": "Programming",
+      "motion": "alive_6",
+      "duration": "10",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-10.png",
+      "say": "Web development",
+      "motion": "alive_6",
+      "duration": "10",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-11.png",
+      "say": "Data science and AI",
+      "motion": "alive_6",
+      "duration": "10",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-12.png",
+      "say": "Cyber security",
+      "motion": "alive_6",
+      "duration": "10",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-13.png",
+      "say": "Robotics control systems",
+      "motion": "alive_6",
+      "duration": "10",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-14.png",
+      "say": "To find out more about these courses, please speak to\nour friendly lecturers and staff here or visit our website\nat north metro tafe dot wa dot edu dot au",
+      "motion": "right_arm_sweep",
+      "duration": "12",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-15.png",
+      "say": "We also hope to see you at SupaNova Comic Con and\nGaming on the 28 th to 29 th of June and SkillsWest Career\nand Employment Expo on the 24 th to 27 th of July.",
+      "motion": "show_left",
+      "duration": "14",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-16.png",
+      "say": "At SupaNova, check us out to learn about the courses\nthat can help you get started or take your career to the\nnext level in the digital world of games, animation,\nmultimedia, visual effects, specialist make-up, and more.",
+      "motion": "show_right",
+      "duration": "14.5",
+      "showOnScreen": false
+    },
+    {
+      "image": "Isabella the Robot 1200x800px screen with text-17.png",
+      "say": "Meet us at SkillsWest to explore your further education\noptions and new career possibilities, with our wide range\nof courses, or get a taste of hands-on experience by\ntrying out our skill-based activities.",
+      "motion": "brown_bear_response",
+      "duration": "14",
+      "showOnScreen": false
+    }
+  ]
+}

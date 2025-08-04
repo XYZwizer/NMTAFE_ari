@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selfie Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+          .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .iframe-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .floating-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+        
+        .floating-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .floating-button:active {
+            transform: translateY(1px);
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #d32f2f;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <script src="shared_controls.js"></script>
+    <div class="container">
+        <div class="iframe-container">
+            <div class="loading" id="loading">Loading...</div>
+            <div class="error" id="error">
+                <h3>Unable to load content</h3>
+                <p>Make sure the selfie server is running on http://selfie:5000</p>
+                <button onclick="reloadIframe()">Retry</button>
+            </div>
+            <iframe 
+                id="contentFrame"
+                src="http://selfie:5000" 
+                title="Selfie Application"
+                onload="handleIframeLoad()"
+                onerror="handleIframeError()">
+            </iframe>
+            <button class="floating-button" onclick="goToPage('list_our_pages')">
+                PageList
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function handleIframeLoad() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        function handleIframeError() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        }
+        
+        function reloadIframe() {
+            const iframe = document.getElementById('contentFrame');
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            iframe.src = iframe.src;
+        }
+        
+        // Hide loading after a timeout if iframe doesn't trigger onload
+        setTimeout(() => {
+            if (document.getElementById('loading').style.display !== 'none') {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

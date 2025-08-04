@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Image Slideshow</title>
+    <!-- Load shared controls -->
+    <script src="shared_controls.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #000;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+        
+        #slideshow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #slideshow {
+            max-width: 100vw;
+            max-height: 100vh;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        
+        #text-overlay {
+            position: absolute;
+            bottom: 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            max-width: 80%;
+            text-align: center;
+            font-size: 1.9rem;
+            z-index: 5;
+        }
+        
+        #presentation-title {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 9;
+        }
+        
+        #startBtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            padding: 1rem 2rem;
+            z-index: 10;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        #startBtn:hover {
+            background-color: #45a049;
+        }
+        #returnBtn {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.1rem;
+            padding: 1rem 2rem; 
+            z-index: 10;
+            cursor: pointer;
+            background-color: #f48f36;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        #returnBtn:hover {
+            background-color: #e59935;
+        }
+        
+        #version-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #999;
+            font-size: 0.8rem;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div id="pre-slideshow">
+        <div id="version-info">Airs Slideshow Player v1.0</div>
+        <div id="presentation-title"></div>
+        <button id="startBtn">Start Slideshow</button>
+        <button id="returnBtn">Return To Presentation Manager</button>
+    </div>
+    <div id="slideshow-container" style="display:none;">
+        <img id="slideshow" src="" alt="Slideshow" />
+        <div id="text-overlay" style="display:none;"></div>
+    </div>
+    
+    
+    
+    <script>
+        let slideData = [];
+        let idx = 0;
+        let interval = null;
+        let slideshowActive = false;
+        let slideshowLoop = false;
+        const preSlideshowContainer = document.getElementById('pre-slideshow');
+        const slideshowContainer = document.getElementById('slideshow-container');
+        const slideshowImage = document.getElementById('slideshow');
+        const startbutton = document.getElementById('startBtn');
+        const textOverlay = document.getElementById('text-overlay');
+        const titleOverlay = document.getElementById('presentation-title');
+        
+        // Function to load the slide data from the JSON file
+        async function loadSlideData() {
+            try {
+                const response = await fetch('slides.json');
+                //if response is not ok, throw an error
+                if (!response.ok) {
+                    throw new Error('Could not load slides.json: ' + response.statusText);
+                }
+                const data = await response.json();
+                slideData = data.slides;
+                
+                // Store the loop setting
+                slideshowLoop = data.loop !== undefined ? data.loop : false;
+                
+                // Display presentation title
+                if (data.title) {
+                    const titleElement = document.getElementById('presentation-title');
+                    titleElement.textContent = data.title;
+                }
+                
+                console.log('Slides loaded:', slideData.length, 'Loop mode:', slideshowLoop);
+            } catch (error) {
+                console.error('Error loading slides:', error);
+                alert('Error loading slides: ' + error.message);
+            }
+        }
+
+        function showImage(i) {
+            if (i < 0 || i >= slideData.length) return;
+            const slide = slideData[i];
+            slideshowImage.src = slide.image;
+            
+            console.log(`Say: ${slide.say}\nMotion: ${slide.motion}`)
+
+            // Call TTS if there's text to say
+            if (slide.say) {
+                sayText(slide.say); //called in shared_controls.js
+            }
+            
+            // Execute motion if specified
+            if (slide.motion) {
+                doMotion(slide.motion); //called in shared_controls.js
+            }
+            
+            // Handle text display based on showOnScreen property
+            if (slide.showOnScreen && slide.say) {
+                textOverlay.textContent = slide.say;
+                textOverlay.style.display = 'block';
+            } else {
+                textOverlay.style.display = 'none';
+            }
+        }
+
+        function stopSlideshow(forced = false) {
+            if (interval) {
+                clearInterval(interval);
+                interval = null;
+            }
+            
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            sayText(" ");
+            textOverlay.style.display = 'none';
+
+            preSlideshowContainer.style.display = 'block';
+            slideshowContainer.style.display = 'none';
+            
+            slideshowActive = false;
+            idx = 0; // Reset to the first slide
+        }
+
+        function startSlideshow() {
+            // Load slide data first, then start the slideshow
+            loadSlideData().then(() => {
+                if (slideData.length === 0) {
+                    console.error('No slides loaded');
+                    return;
+                }
+                // Hide pre-slideshow elements
+                preSlideshowContainer.style.display = 'none';
+                slideshowContainer.style.display = 'flex';
+                document.documentElement.requestFullscreen();
+                slideshowActive = true;
+                
+                // Start the slideshow loop
+                showNextSlide();
+            });
+        }
+        
+        function showNextSlide() {
+            if (!slideshowActive) return;
+            
+            showImage(idx);
+            
+            // Schedule the next slide using the current slide's duration
+            setTimeout(() => {
+                idx = (idx + 1);
+                
+                // Handle reaching the end of slides
+                if (idx >= slideData.length) {
+                    if (slideshowLoop) {
+                        // Loop back to the first slide if loop is enabled
+                        idx = 0;
+                    } else {
+                        // Stop the slideshow if loop is disabled and we've reached the end
+                        stopSlideshow();
+                        return;
+                    }
+                }
+                
+                showNextSlide();
+            }, slideData[idx].duration * 1000);
+        }
+        
+        startbutton.addEventListener('click', startSlideshow);
+        
+        // Handle Return To Presentation Manager button
+        const returnButton = document.getElementById('returnBtn');
+        returnButton.addEventListener('click', () => {
+            //add fucntion to return to presentation manager
+            goToPage('list_our_pages');
+        });
+
+        // Handle clicks anywhere on the document to exit slideshow
+        document.addEventListener('click', function(event) {
+            // Only respond to clicks if slideshow is active and if the click wasn't on the start button
+            if (slideshowActive && event.target !== startbutton && event.target !== returnButton) {
+                stopSlideshow();
+                event.preventDefault();
+            }
+        });
+        
+        // Pre-load the slide data when the page loads
+        window.addEventListener('DOMContentLoaded', loadSlideData);
+    </script>
+</body>
+</html>
