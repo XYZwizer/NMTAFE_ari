@@ -1,0 +1,16 @@
+# pre 2026
+
+- created a systemd services (python script) to look for and connect to Bluetooth controller PlayStation controller and send motor commands to based on input
+
+- created web browser based power-point system to play slideshows at events with tts and arm moments
+
+- disabled speech recognition ( to prevent presentations from being disrupted )
+
+- added our own raspberry pie in the head
+
+- disabled dhcp server running on ari-20c
+- enabled/added dhcp client to ari-20c
+
+- replaced stock internal switch with router to act as dhcp server for all computers in robot ( ari-20c, ari-20r, etc )
+
+# Feb 2026
