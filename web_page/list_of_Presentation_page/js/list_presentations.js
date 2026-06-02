@@ -7,6 +7,7 @@ const PRESENTATIONS = [
     { id: "cyberwest_v6", displayName: "Cyber West" },
     { id: "joondulup_v2", displayName: "Joondulup" },
     { id: "murray_selfie", displayName: "Selfie Cam" },
+    { id: "joondalup_ceda", displayName: "Joondalup CEDA" }
 ];
 
 // Hidden presentations state
