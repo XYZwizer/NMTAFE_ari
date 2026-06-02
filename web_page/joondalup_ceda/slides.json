@@ -1,0 +1,13 @@
+{
+  "title": "Joondalup CEDA",
+  "loop": true,
+  "slides": [
+    {
+      "image": "welcome_CEDA.png",
+      "say": "",
+      "motion": "",
+      "duration": "10",
+      "showOnScreen": false
+    }
+  ]
+}
